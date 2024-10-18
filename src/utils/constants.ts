@@ -11,22 +11,24 @@ export const settings: Settings = {
     cardCatalogTemplate: '#card-catalog',
     cardPreviewTemplate: '#card-preview',
     cardBasketTemplate: '#card-basket',
-	productSettings: {
-		title: '.card__title',
+    cardSettings: {
+        id: '.basket__item-index',
+        title: '.card__title',
 		category: '.card__category',
 		image: '.card__image',
 		description: '.card__text',
         price: '.card__price',
-        comapactClass: '.card_compact',
-        expandedClass: '.card_full',
-	},
+        delete: '.basket__item-delete',
+        compactClass: '.card_compact',
+        expendedClass: '.card_full',
+    },
 
 	pageSelector: '.page',
 	pageSettings: {
 		wrapper: '.page__wrapper',
 		counter: '.header__basket-counter',
 		basket: '.header__basket',
-		// lockedClass: 'page__wrapper_locked', // Question: can be useful and where is it?
+		lockedClass: 'page__wrapper_locked', 
 	},
 
 	basketTemplate: '#basket',
@@ -36,8 +38,8 @@ export const settings: Settings = {
         totalLabel: '.basket__price',
 	},
 
-	orderTemplate: '#order',
-	orderSettings: {
+	orderInfoTemplate: '#order',
+	orderInfoSettings: {
         isCash: 'button[name=cash]',
         isCard: 'button[name=card]',
 		address: 'input[name=address]',
@@ -66,11 +68,8 @@ export const settings: Settings = {
     contactsModal: {
 		errorLabel: '.form__errors',
 	},
-    // Question: why succes looks like this
-    // but before we don't use fields of modal
 	successModal: {
-		text: 'Списано ',
-		// action: string;
+		text: '.order-success__description',
 	},
     appState: {
 		formatCurrency: (value: number) => `${value} синапсов`,

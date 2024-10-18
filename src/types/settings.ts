@@ -6,34 +6,27 @@ export interface Settings {
 		itemClass: string;
 	};
 
-    // cardGalleryTemplate: string; // Question: how call better?
-	// cardGallerySettings: {
-    //     category: string;
-	// 	title: string;
-	// 	image: string;
-    //     price: string;
-	// };
-
-    // Question: how call better?
     cardCatalogTemplate: string;
     cardPreviewTemplate: string;
     cardBasketTemplate: string;
-	productSettings: {
-		title: string;
-		category: string;
-		image: string;
-		description: string;
+    cardSettings: {
+        id: string;
+        image: string;
+	    title: string;
+        category: string;
+        description: string;
         price: string;
-        comapactClass: string;
-        expandedClass: string;
-	};
+        delete: string;
+	    compactClass: string;
+        expendedClass: string;
+    };
 
 	pageSelector: string;
 	pageSettings: {
 		wrapper: string;
-		counter: string;
-		basket: string;
-		// lockedClass: string; // Question: can be useful?
+	    counter: string;
+	    basket: string;
+	    lockedClass: string; 
 	};
 
 	basketTemplate: string;
@@ -43,9 +36,8 @@ export interface Settings {
         totalLabel: string;
 	};
 
-	orderTemplate: string;
-	orderSettings: {
-		// payment: string;
+	orderInfoTemplate: string;
+	orderInfoSettings: {
         isCash: string;
         isCard: string;
 		address: string;
@@ -57,48 +49,27 @@ export interface Settings {
 		phone: string;
 	};
 
-    // Question: can be useful for error order?
-	// messageTemplate: string;
-	// messageSettings: {
-	// 	title: string;
-	// 	description: string;
-	// 	action: string;
-	// };
-
     // modals settings
 	modalTemplate: string;
 	modalSettings: {
 		close: string;
 		content: string;
-		activeClass: string; // Question
+		activeClass: string;
 	};
 	cardModal: {
         buttonLabel: string;
-        // blockedLabel: string;
-        // nextLabel: string;
-		// nextSettings: ElementCreator;
 	};
 	basketModal: {
-		// nextLabel: string;
-		// nextSettings: ElementCreator;
 		totalLabel: string;
 	};
 	orderModal: {
-		// nextLabel: string;
-		// nextSettings: ElementCreator;
         errorLabel: string;
 	};
     contactsModal: {
         errorLabel: string;
-		// nextLabel: string;
-		// nextSettings: ElementCreator;
 	};
-    // Question: why succes looks like this
-    // but before we don't use fields of modal
 	successModal: {
-		// title: string;
 		text: string;
-		// action: string;
 	};
 
     // model settings

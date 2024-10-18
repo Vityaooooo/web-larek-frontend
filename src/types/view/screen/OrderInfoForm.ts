@@ -1,12 +1,12 @@
 import { OrderInfoData } from '../partial/OrderInfo';
 
-export interface OrderFormData {
-	contacts: OrderInfoData;
+export interface OrderInfoFormData {
+	orderInfo: OrderInfoData;
 	isActive: boolean;
 	isDisabled: boolean;
-	// message: string; // Question: are we needs it?
+	message: string; 
 	total: string;
-	// isError: boolean; // Question: are we needs it?
+	isError: boolean; 
 }
 
 export interface OrderFormSettings {

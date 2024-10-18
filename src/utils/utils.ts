@@ -113,7 +113,13 @@ export function ensureElement<T extends HTMLElement>(selectorElement: SelectorEl
  */
 export function cloneTemplate<T extends HTMLElement>(query: string | HTMLTemplateElement): T {
     const template = ensureElement(query) as HTMLTemplateElement;
-    return template.content.firstElementChild.cloneNode(true) as T;
+    const element = template.content.firstElementChild;
+
+    if (element) {
+        return template.content.firstElementChild.cloneNode(true) as T;
+    } else {
+        throw new Error('The template has no child elements to clone');
+    }
 }
 
 /**

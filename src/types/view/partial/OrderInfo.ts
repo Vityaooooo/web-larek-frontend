@@ -1,13 +1,14 @@
 import { IChangeable } from '../../base/View';
 
+type payment = 'isCard' | 'isCash';
+
 export interface OrderInfoData {
-	isCash?: boolean;
-    isCard?: boolean;
+    payment: payment;
 	address: string;
 }
 
 export interface OrderSettings extends IChangeable<OrderInfoData> {
-	isCash?: boolean;
-    isCard?: boolean;
+	isCash: string;
+    isCard: string;
 	address: string;
 }

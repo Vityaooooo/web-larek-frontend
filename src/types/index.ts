@@ -9,7 +9,6 @@ export type ElementChild = HTMLElement | HTMLElement[];
 export type ElementAttrs = 
     | 'textContent'
     | 'className'
-    | 'href' // Question
     | 'src'
     | 'alt'
     | 'dataset';

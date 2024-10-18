@@ -27,6 +27,7 @@ export interface IChangeable<T> {
 	onChange: (args: IChangeableEvent<T>) => void;
 }
 
+// Question: are we need it?
 // Настройки для выбираемого отображения (списки, таблицы...)
 export type ISelectableEvent<T> = { event: Event; value?: T };
 export interface ISelectable<T> {

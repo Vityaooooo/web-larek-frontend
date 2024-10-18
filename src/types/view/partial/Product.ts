@@ -11,5 +11,5 @@ export interface ProductSettings {
     description: string;
     image: string;
     category: string;
-    price: number;
+    price: string;
 }

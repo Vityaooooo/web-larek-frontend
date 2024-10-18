@@ -1,5 +1,3 @@
-// Question: Are we need this interface?
-
 import { IClickable } from '../../base/View';
 
 export interface ProductBasketData {
@@ -8,9 +6,9 @@ export interface ProductBasketData {
     price: number;
 }
 
-export interface TicketSettings extends IClickable<ProductBasketData> {
+export interface ProductBasketSettings extends IClickable<ProductBasketData> {
 	id: string;
 	title: string;
-    price: number;
+    price: string;
 	delete: string;
 }

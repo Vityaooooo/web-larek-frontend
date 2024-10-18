@@ -1,12 +1,12 @@
 import { ContactsData } from '../partial/Contacts';
 
-export interface OrderFormData {
+export interface ContactsFormData {
 	contacts: ContactsData;
 	isActive: boolean;
 	isDisabled: boolean;
-	// message: string; // Question: are we needs it?
+	message: string; 
 	total: string;
-	// isError: boolean; // Question: are we needs it?
+	isError: boolean; 
 }
 
 export interface ContactsFormSettings {

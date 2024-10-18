@@ -1,5 +1,6 @@
 import { Product, Contacts, OrderInfo, Order, OrderResult, IProductApi } from "./ProductApi";
 
+// Question: we have like this type in view/partial/ProductBasket
 // Краткое описание товара для отображения в корзине
 export type ProductBasket = {
     id: string;
@@ -22,7 +23,7 @@ export enum AppStateModals {
 export enum AppStateChanges {
     products = 'change:products',
 	modal = 'change:modal',
-	// modalMessage = 'change:modalMessage', // Question: can be useful?
+	modalMessage = 'change:modalMessage', 
 	basket = 'change:basket',
 	order = 'change:order',
 }
@@ -34,8 +35,6 @@ export interface AppState {
 
 	// Заполняемые пользователем данные
 	basket: Map<string, Product>;
-    // Question: needs new "storage" for Product like
-    //  basketProducts = Product[];
 	basketTotal: number;
 	contacts: Contacts;
 	orderInfo: OrderInfo;
@@ -44,8 +43,8 @@ export interface AppState {
 	// Состояние интерфейса
 	openedModal: AppStateModals;
 	isOrderReady: boolean;
-	// modalMessage: string | null; // Question: is it needs?
-	// isError: boolean; // Question: is it needs?
+	modalMessage: string | null; 
+	isError: boolean; 
 
 	// Действия с API
 	loadProducts(): Promise<void>;
@@ -60,16 +59,15 @@ export interface AppState {
 
 	// Вспомогательные методы
 	getBasketProduct(): ProductBasket | null;
-	formatCurrency(value: number): string;
+	formatCurrency(value: number): string; // Возвращает строку с ценой + синапсов
 
 	// Методы для работы с модальными окнами
 	openModal(modal: AppStateModals): void;
-	// setMessage(message: string | null, isError: boolean): void; // Question: are we needs it?
+	setMessage(message: string | null, isError: boolean): void; 
 }
 
 // Настройки модели данных
 export interface AppStateSettings {
-	formatCurrency: (value: number) => string;
 	// Функция, которая будет вызываться при изменении состояния
 	onChange: (changed: AppStateChanges) => void;
 }
