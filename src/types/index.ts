@@ -1,30 +1,44 @@
-// Алиас селектора элемента
-export type SelectorElement<T> = T | string;
-// Алиас коллекции селектора элемента
-export type SelectorCollection<T> = string | NodeListOf<Element> | T[];
+export interface ICard {
+    id: string;
+    title: string;
+    description: string;
+    image: string;
+    category: string;
+    price: number;
+}
 
-export type ElementChild = HTMLElement | HTMLElement[];
+export interface IOrderInfo {
+    address: string;
+    payment: string;
+}
 
-// Теги для универсальной настройки тега
-export type ElementAttrs = 
-    | 'textContent'
-    | 'className'
-    | 'src'
-    | 'alt'
-    | 'dataset';
+export interface IContacts {
+    email: string;
+    phone: string;
+}
 
-// настройки элемента
-export type ElementProps<T extends HTMLElement> = Partial<
-	Record<keyof T, string | boolean | object>
->;
+export interface Order extends IOrderInfo, IContacts {
+    items: ICard[];
+    total: number;
+}
 
-export type ElementValue<T extends HTMLElement> =
-	| string
-	| ElementChild
-	| ElementProps<T>; 
+export interface OrderResult extends Order {
+    id: string;
+}
 
+export type Payment = 'cash' | 'card';
 
-// export type ElementCreator<T extends HTMLElement = HTMLElement> = [
-// 	keyof HTMLElementTagNameMap,
-// 	ElementProps<T>
-// ];
+export enum Message {
+    phone = 'Укажите номер телефона',
+    email = 'Укажите почту',
+    payment = 'укажите способ оплаты',
+    address = 'Укажите адресс доставки',
+    form = 'Заполните поля',
+    no = '',
+}
+
+export enum ButtonLabels {
+    isAvailable = 'В корзину',
+    inBasket = 'В корзине',
+    isUnavailable = 'Недоступно',
+}

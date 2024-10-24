@@ -1,11 +1,7 @@
-import { CardData } from '../partial/Card';
+import { ICard } from "../..";
 
-export interface MainData {
-	counter: number;
-	items: CardData[];
-}
-
-export interface MainSettings {
-	onOpenBasket: () => void;
-	onOpenProduct: (id: string) => void;
-}
+export interface IMain {
+    counter: number;
+    catalog: ICard[];
+    isLocked: boolean;
+} 
