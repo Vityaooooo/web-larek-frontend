@@ -1,11 +1,6 @@
-import { IChangeable } from '../../base/View';
+import { IForm } from "../common/Form";
 
-export interface ContactsData {
-	email: string;
-	phone: string;
-}
-
-export interface ContactsSettings extends IChangeable<ContactsData> {
-	email: string;
-	phone: string;
+export interface IContacts extends IForm {
+    email: string;
+    phone: string;
 }

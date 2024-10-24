@@ -1,11 +1,5 @@
-import { EventName, Subscriber, EmitterEvent } from "../../types/base/EventEmitter";
+import { IEvents, EventName, Subscriber, EmitterEvent } from '../../types/base/events';
 
-
-export interface IEvents {
-    on<T extends object>(event: EventName, callback: (data: T) => void): void;
-    emit<T extends object>(event: string, data?: T): void;
-    trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void;
-}
 
 /**
  * Брокер событий, классическая реализация

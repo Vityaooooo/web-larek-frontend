@@ -1,6 +1,4 @@
-// Типизированные настройки
 export interface Settings {
-    // views settings
 	gallerySelector: string;
 	gallerySettings: {
 		itemClass: string;
@@ -21,8 +19,8 @@ export interface Settings {
         expendedClass: string;
     };
 
-	pageSelector: string;
-	pageSettings: {
+	mainSelector: string;
+	mainSettings: {
 		wrapper: string;
 	    counter: string;
 	    basket: string;
@@ -31,10 +29,15 @@ export interface Settings {
 
 	basketTemplate: string;
 	basketSettings: {
-		activeItemClass: string;
+        itemsList: string;
 		itemClass: string;
         totalLabel: string;
 	};
+
+    formSettings: {
+        error: string;
+        submit: string;
+    };
 
 	orderInfoTemplate: string;
 	orderInfoSettings: {
@@ -49,31 +52,24 @@ export interface Settings {
 		phone: string;
 	};
 
-    // modals settings
+    successTemplate: string;
+    successSettings: {
+        total: string;
+    }
+
 	modalTemplate: string;
 	modalSettings: {
 		close: string;
 		content: string;
-		activeClass: string;
+        activeClass: string;
 	};
 	cardModal: {
-        buttonLabel: string;
+        button: string;
 	};
 	basketModal: {
-		totalLabel: string;
-	};
-	orderModal: {
-        errorLabel: string;
-	};
-    contactsModal: {
-        errorLabel: string;
+		button: string;
 	};
 	successModal: {
-		text: string;
+		button: string;
 	};
-
-    // model settings
-	appState: {
-		formatCurrency: (value: number) => string;
-    }
 }

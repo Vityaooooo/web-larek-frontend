@@ -8,6 +8,7 @@ export const settings: Settings = {
 	gallerySettings: {
 		itemClass: '.gallery__item',
 	},
+
     cardCatalogTemplate: '#card-catalog',
     cardPreviewTemplate: '#card-preview',
     cardBasketTemplate: '#card-basket',
@@ -23,8 +24,8 @@ export const settings: Settings = {
         expendedClass: '.card_full',
     },
 
-	pageSelector: '.page',
-	pageSettings: {
+	mainSelector: '.page',
+	mainSettings: {
 		wrapper: '.page__wrapper',
 		counter: '.header__basket-counter',
 		basket: '.header__basket',
@@ -33,10 +34,15 @@ export const settings: Settings = {
 
 	basketTemplate: '#basket',
 	basketSettings: {
-		activeItemClass: '',
+        itemsList: '.basket__list',
 		itemClass: '.basket__item ',
         totalLabel: '.basket__price',
 	},
+
+    formSettings: {
+        error: '.form__errors',
+        submit: '.order__button',
+    },
 
 	orderInfoTemplate: '#order',
 	orderInfoSettings: {
@@ -50,28 +56,28 @@ export const settings: Settings = {
 		email: 'input[name=email]',
 		phone: 'input[name=phone]',
 	},
+
+    successTemplate: '#success',
+    successSettings: {
+        total: '.order-success__description',
+    },
+
 	modalTemplate: '#modal-container',
 	modalSettings: {
 		close: '.modal__close',
 		content: '.modal__content',
 		activeClass: 'modal_active',
 	},
+
 	cardModal: {
-        buttonLabel: '.card__button',
+        button: '.card__button',
 	},
+
 	basketModal: {
-		totalLabel: '.basket__price',
+		button: '.basket__button',
 	},
-	orderModal: {
-		errorLabel: '.form__errors',
-	},
-    contactsModal: {
-		errorLabel: '.form__errors',
-	},
+
 	successModal: {
-		text: '.order-success__description',
+		button: '.order-success__close',
 	},
-    appState: {
-		formatCurrency: (value: number) => `${value} синапсов`,
-    }
 };

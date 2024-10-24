@@ -113,20 +113,19 @@ export function ensureElement<T extends HTMLElement>(selectorElement: SelectorEl
  */
 export function cloneTemplate<T extends HTMLElement>(query: string | HTMLTemplateElement): T {
     const template = ensureElement(query) as HTMLTemplateElement;
-    const element = template.content.firstElementChild;
-
-    if (element) {
-        return template.content.firstElementChild.cloneNode(true) as T;
-    } else {
-        throw new Error('The template has no child elements to clone');
-    }
+    return template.content.firstElementChild!.cloneNode(true) as T;
 }
 
-/**
- * Получение свойств объектов
- * @param obj 
- * @param filter
- */
+export function bem(block: string, element?: string, modifier?: string): { name: string, class: string } {
+    let name = block;
+    if (element) name += `__${element}`;
+    if (modifier) name += `_${modifier}`;
+    return {
+        name,
+        class: `.${name}`
+    };
+}
+
 export function getObjectProperties(obj: object, filter?: (name: string, prop: PropertyDescriptor) => boolean): string[] {
     return Object.entries(
         Object.getOwnPropertyDescriptors(
