@@ -239,7 +239,7 @@ interface ICardApi {
 
 * ```open(): void``` - для открытия модального окна
 * ```close(): void``` - для закрытия модальноо окна 
-* ```render(data: IModalData): HTMLElement``` - для рендера модального окна
+* ```render(data: IModal): HTMLElement``` - для рендера модального окна
 
 Является наследником *Класса Component*
 
@@ -288,7 +288,7 @@ interface ICardApi {
 Класс имеет методы:
 
 * ```reset(): void``` - для очистки формы
-* ```render(state: Partial<T> & IFormState): HTMLFormElement``` - для рендера формы
+* ```render(state: Partial<T> & IForm): HTMLFormElement``` - для рендера формы
 
 Является наследником *Класса Component*
 
