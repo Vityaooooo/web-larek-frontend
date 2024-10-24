@@ -3,7 +3,7 @@
 Интернет-магазин товаров для веб-разработчиков
 
 Стек: HTML, SCSS, TS, Webpack
-Паттерн - MVC
+Паттерн - MVP
 
 Структура проекта:
 
@@ -129,7 +129,7 @@ interface IEvents {
 
 Класс имеет методы:
 
-* ```emitChanges(event: string, payload?: object)``` - для установки событий о том что модель поменялась
+* ```emitChanges(event: string, payload?: object)``` - для установки событий о том, что модель поменялась
 
 ## Компоненты модели данных (бизнес-логика)
 
@@ -335,11 +335,11 @@ interface ICardApi {
 
 7. **Класс Success**
 
-Отвечает за отображение карточки 
+Отвечает за статуса "Успешно" о выполнении заказа
 
 Конструктор принимает:
 
-* ```container: HTMLElement``` - контейнер для карточки на основе template из index.html
+* ```container: HTMLElement``` - контейнер на основе template из index.html
 * ```events: IEvents``` - экземпляр *класса EventEmitter* 
 
 Содержит следующие атрибуты:
