@@ -41,5 +41,4 @@ export enum ButtonLabels {
     isAvailable = 'В корзину',
     inBasket = 'В корзине',
     isUnavailable = 'Недоступно',
-} 
-
+}
