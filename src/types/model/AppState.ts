@@ -1,18 +1,17 @@
-import { ICard, Order, Message, IOrderInfo, IContacts } from '../index';
+import { ICard, IOrderInfo, IContacts } from '../index';
 
 export interface IAppState {
-    cards: Map<string, ICard>
-    basket: Map<string, ICard>
-    order: Order;
-    message: Message;
-    isError: boolean;
-    isOrderReady: boolean;
-    preview: string | null;
-
-    loadCards(): void;
-    getCard(id: string): ICard;
-    orderCards(order: Order): void;
+    loadCards(): void
+    getCard(id: string): ICard
     addCard(id: string): void;
     removeCard(id: string): void;
     setOrderFiedls(field: keyof IOrderInfo | IContacts, value: string);
+    getBasketCardId(): string[];
+    formatCurrency(value: number): string;
+    clearBasket(): void;
+    getTotal(): number;
+    setPreview(card: ICard): void;
+    validateOrderInfo(): boolean;
+    validateContacts(): boolean;
+    validateOrder(): boolean;
 }
