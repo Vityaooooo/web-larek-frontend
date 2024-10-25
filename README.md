@@ -164,7 +164,6 @@ interface IEvents {
 * ```setPreview(card: ICard): void  ``` - для изменения данных об открытой карточке
 * ```validateOrderInfo(): boolean``` - для проверки информации о заказе на валидность
 * ```validateContacts(): boolean``` - для проверки контактов на валидность
-* ```validateOrder(): boolean``` - для проверки заказа на валидность
 
 Является наследником *Класса Model*
 
