@@ -20,9 +20,18 @@ export const settings: Settings = {
 		description: '.card__text',
         price: '.card__price',
         delete: '.basket__item-delete',
+		toBasket: '.card__button',
         compactClass: '.card_compact',
         expendedClass: '.card_full',
     },
+
+	cardCategory: {
+		soft: 'card__category_soft',
+		other: 'card__category_other',
+		hard: 'card__category_hard',
+		button: 'card__category_button',
+		additional: 'card__category_additional',
+	},
 
 	mainSelector: '.page',
 	mainSettings: {

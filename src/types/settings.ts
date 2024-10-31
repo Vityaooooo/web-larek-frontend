@@ -15,9 +15,18 @@ export interface Settings {
         description: string;
         price: string;
         delete: string;
+		toBasket: string;
 	    compactClass: string;
         expendedClass: string;
     };
+
+	cardCategory: {
+		soft: string;
+		other: string;
+		hard: string;
+		button: string;
+		additional: string;
+	}
 
 	mainSelector: string;
 	mainSettings: {
