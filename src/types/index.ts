@@ -18,12 +18,13 @@ export interface IContacts {
 }
 
 export interface Order extends IOrderInfo, IContacts {
-    items: ICard[];
+    items: string[];
     total: number;
 }
 
-export interface OrderResult extends Order {
+export interface OrderResult {
     id: string;
+    total: number;
 }
 
 export type Payment = 'cash' | 'card';
@@ -42,3 +43,5 @@ export enum ButtonLabels {
     inBasket = 'В корзине',
     isUnavailable = 'Недоступно',
 }
+
+export type FormErrors = Partial<Record<keyof IOrderInfo | keyof IContacts, string>>;

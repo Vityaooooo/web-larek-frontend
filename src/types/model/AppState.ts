@@ -1,17 +1,15 @@
 import { ICard, IOrderInfo, IContacts } from '../index';
 
 export interface IAppState {
-    loadCards(): void
+    loadCards(cards: ICard[]): void
     getCard(id: string): ICard
     addCard(id: string): void;
     removeCard(id: string): void;
-    setOrderFiedls(field: keyof IOrderInfo | IContacts, value: string);
+    setOrderFiedls(field: keyof IOrderInfo | keyof IContacts, value: string): void;
     getBasketCardId(): string[];
     formatCurrency(value: number): string;
     clearBasket(): void;
     getTotal(): number;
     setPreview(card: ICard): void;
-    validateOrderInfo(): boolean;
-    validateContacts(): boolean;
     validateOrder(): boolean;
 }
