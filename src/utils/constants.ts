@@ -21,8 +21,8 @@ export const settings: Settings = {
         price: '.card__price',
         delete: '.basket__item-delete',
 		toBasket: '.card__button',
-        compactClass: '.card_compact',
-        expendedClass: '.card_full',
+        compactClass: 'card_compact',
+        expendedClass: 'card_full',
     },
 
 	cardCategory: {

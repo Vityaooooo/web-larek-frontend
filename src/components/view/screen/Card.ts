@@ -25,19 +25,33 @@ export class Card extends Component<ICardView> {
     constructor(protected readonly container: HTMLElement, protected events: IEvents, action?: ICardActions) {
         super(container);
         
-        // Сделать условие если контейнер содержит класс full или compact то нужно добавить необходимые атрибуты
-        // this._id = ensureElement<HTMLElement>(settings.cardSettings.id, container);
-        // this._buttonDelete = ensureElement<HTMLButtonElement>(settings.cardSettings.delete, container);
-        // this._buttonBasket = ensureElement<HTMLButtonElement>(settings.cardSettings.toBasket, container);
-        this._image = ensureElement<HTMLImageElement>(settings.cardSettings.image, container);
-        this._category = ensureElement<HTMLElement>(settings.cardSettings.category, container);
-        // this._description = ensureElement<HTMLElement>(settings.cardSettings.description, container);
-
         this._title = container.querySelector(settings.cardSettings.title);
         this._price = container.querySelector(settings.cardSettings.price);
-    
-        // Добавить лисанеры на кнопки если они существуют (IF)
 
+
+        if (container.classList.contains(settings.cardSettings.compactClass)) {
+            this._id = ensureElement<HTMLElement>(settings.cardSettings.id, container);
+            this._buttonDelete = ensureElement<HTMLButtonElement>(settings.cardSettings.delete, container);
+            // @TODO: add eventListener to button
+            this._buttonBasket.addEventListener('click', () => {
+                this.events.emit('basket:changed', {id: this.container.dataset.id});
+            });
+        } else {
+            if (container.classList.contains(settings.cardSettings.expendedClass)) {
+                this._description = ensureElement<HTMLElement>(settings.cardSettings.description, container);
+                this._buttonBasket = ensureElement<HTMLButtonElement>(settings.cardSettings.toBasket, container);
+                // @TODO: add eventListener to button
+                this._buttonBasket.addEventListener('click', () => {
+                    this.events.emit('basket:changed', {id: this.container.dataset.id})
+                })
+            } 
+            this._image = ensureElement<HTMLImageElement>(settings.cardSettings.image, container);
+            this._category = ensureElement<HTMLElement>(settings.cardSettings.category, container);
+            // @TODO: add eventListener to button
+            this.container.addEventListener('click', () => {
+                this.events.emit('preview:changed', {id: this.container.dataset.id})
+            })
+        }
     }
 
     set image(value: string) {
