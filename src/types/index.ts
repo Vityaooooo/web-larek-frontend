@@ -40,8 +40,8 @@ export enum Message {
 
 export enum ButtonLabels {
     isAvailable = 'В корзину',
-    inBasket = 'В корзине',
-    isUnavailable = 'Недоступно',
+    inBasket = 'Убрать из корзины',
+    isUnvailable = 'Недоступно'
 }
 
 export type FormErrors = Partial<Record<keyof IOrderInfo | keyof IContacts, string>>;

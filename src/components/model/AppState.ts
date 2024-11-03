@@ -33,7 +33,7 @@ export class AppState extends Model<{}> implements IAppState {
     addCard(id: string) {
         const card = this.getCard(id)!;
         this.basket.set(card.id, card);
-        this.emitChanges('basket:changed');
+        this.emitChanges('basket:add', {id});
         // or
         // this.basket.set(id, this.getCard(id)!);
         // this.emitChanges('basket:changed');
@@ -41,7 +41,7 @@ export class AppState extends Model<{}> implements IAppState {
 
     removeCard(id: string) {
         this.basket.delete(id);
-        this.emitChanges('basket:changed');
+        this.emitChanges('basket:remove', {id});
     }
 
     setOrderFiedls(field: keyof IOrderInfo | keyof IContacts, value: string) {
@@ -91,7 +91,7 @@ export class AppState extends Model<{}> implements IAppState {
         }
         return total;
     }
-    // Don't check
+    
     setPreview(card: ICard) {
         this.preview = card.id;
         this.emitChanges('preview:changed', card);

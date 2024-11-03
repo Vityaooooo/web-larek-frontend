@@ -23,12 +23,12 @@ export class Modal extends Component<IModal> {
     }
 
     open() {
-        this.toggleClass(this.container, settings.modalSettings.activeClass);
+        this.toggleClass(this.container, settings.modalSettings.activeClass, true);
         this.events.emit('modal:open');
     }
 
     close() {
-        this.toggleClass(this.container, settings.modalSettings.activeClass);
+        this.toggleClass(this.container, settings.modalSettings.activeClass, false);
         // Question
         // this.content = null;
         this.events.emit('modal:close');

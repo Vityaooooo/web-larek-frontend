@@ -19,7 +19,6 @@ export class Main extends Component<IMain> {
         this._catalog = document.querySelector(settings.gallerySelector);
         this.wrapper = document.querySelector(settings.mainSettings.wrapper);
 
-        //@TODO: add event listener to button basket
         this._basket.addEventListener('click', () => {
             this.events.emit('basket:open');
         });
