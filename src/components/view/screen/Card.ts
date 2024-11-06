@@ -39,12 +39,7 @@ export class Card extends Component<ICardView> {
             if (container.classList.contains(settings.cardSettings.expendedClass)) {
                 this._description = ensureElement<HTMLElement>(settings.cardSettings.description, this.container);
                 this._buttonBasket = ensureElement<HTMLButtonElement>(settings.cardSettings.toBasket, this.container);
-                this._buttonBasket.addEventListener('click', (evt) => {
-                    action.onClick(evt);
-                    this._buttonBasket.textContent === ButtonLabels.isAvailable?
-                        this.buttonLabel = ButtonLabels.inBasket:
-                        this.buttonLabel = ButtonLabels.isAvailable
-                });
+                this._buttonBasket.addEventListener('click', action.onClick);
             } else {
                 this.container.addEventListener('click', action.onClick);
             }

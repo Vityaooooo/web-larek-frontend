@@ -2,6 +2,7 @@ import { IEvents } from '../../../types/base/events';
 import { settings } from '../../../utils/constants';
 import { IBasket } from '../../../types/view/partial/Basket';
 import { Component } from '../../base/Component';
+import { AppStateEvents } from '../../..';
 
 export class Basket extends Component<IBasket> {
     protected _list: HTMLElement;
@@ -16,7 +17,7 @@ export class Basket extends Component<IBasket> {
         this._button = container.querySelector(settings.basketModal.button)!;
     
         this._button.addEventListener('click', () => {
-            this.events.emit('basket:submit');
+            this.events.emit(AppStateEvents.BasketSubmit);
         });
     }
 

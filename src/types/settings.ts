@@ -44,8 +44,11 @@ export interface Settings {
 	};
 
     formSettings: {
+		order_name: string;
+		contacts_name: string;
         error: string;
-        submit: string;
+        submit_order: string;
+		submit_contacts: string;
     };
 
 	orderInfoTemplate: string;
@@ -53,6 +56,8 @@ export interface Settings {
         isCash: string;
         isCard: string;
 		address: string;
+		button_active: string;
+		button_unactive: string;
 	};
 
     contactsTemplate: string;
