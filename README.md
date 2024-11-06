@@ -118,7 +118,6 @@ interface IEvents {
 * ```setVisible(element: HTMLElement)``` - для отображения отображения элемента
 * ```setImage(element: HTMLImageElement, src: string, alt?: string)``` - для установки изображения с альтернативным текстом
 * ```render(data?: Partial<T>): HTMLElement``` - для отображения element
-* ```emitChanges(event: string, payload?: object)``` - для установки событий о том что компонент поменялся
 
 4. **Класс Model**
 
@@ -147,9 +146,10 @@ interface IEvents {
 
 * ```cards: Map<string, ICard>``` - данные всех карточек товара, представленные в приложении, хранит в виде ключа id карточки, в качестве значение данные карточки
 * ```basket: Map<string, ICard>``` - карточки товаров, которые были добавлены в корзину, хранит в виде ключа id карточки, в качестве значение данные карточки
-* ```order: Order``` - данные для осуществления заказа: (Contacts: контакты пользователя - email и phone, OrderInfo: информацию о заказе - payment и address)
+* ```order: IOrder``` - данные для осуществления заказа: (Contacts: контакты пользователя - email и phone, OrderInfo: информацию о заказе - payment и address)
 * ```messages: FormErrors``` - сообщение об ошибки в данных для атрибута *order*
 * ```preview: string | null``` - id карточки для отображения в модальном окне
+* ```state: string | null``` - состояние приложения
 
 Класс имеет методы:
 
@@ -163,8 +163,12 @@ interface IEvents {
 * ```clearBasket(): void``` - для очистки всей корзины
 * ```getTotal(): number``` - получения всей суммы заказа
 * ```setPreview(card: ICard): void  ``` - для изменения данных об открытой карточке
-* ```validateOrderInfo(): boolean``` - для проверки информации о заказе на валидность
-* ```validateContacts(): boolean``` - для проверки контактов на валидность
+* ```getOrder(): IOrder``` - для получения всей информации о заказе
+* ```clearOrder(): void``` - для очистки заказа
+* ```getState(): string``` - для получения состояния приложения
+* ```setState(value: AppStates): void``` - для передачи состояния приложения
+* ```getMessages(): FormErrors``` - для получения сообщений, указывающих на отсутсвие данных в атрибуте Order
+* ```validateOrder(): boolean``` - для проверки данных заказа на валидность
 
 Является наследником *Класса Model*
 
@@ -281,6 +285,7 @@ interface ICardApi {
 
 * изменяет активность кнопки подтверждения
 * отображения ошибки валидации
+* установки фокусирования на input
 
 Класс имеет методы:
 
@@ -310,7 +315,7 @@ interface ICardApi {
 
 Является наследником *Класса Form*
 
-6. **Класс Contact**
+6. **Класс Contacts**
 
 Отвечает за отображение формы заполнения контактов внутри контейнера контента в модальном окне
 
@@ -344,6 +349,8 @@ interface ICardApi {
 * ```close: HTMLElement``` - содержит HTMLElement для закрытия модального окна 
 * ```total: HTMLElement``` - содержит сумму заказа
 
+Содержит сеттер для установки суммы заказа
+
 8. **Класс Card**
 
 Отвечает за отображение карточки 
@@ -371,7 +378,11 @@ interface ICardApi {
 * установки заголовка
 * установки описания
 * установки цены
-* установки доступности покупки
+* установки доступности покупки и текста кнопки
+* установки индекса в корзине
+* установки dataset.id атрибута у элемента 
+
+Также содержит геттер для получения dataset.id атрибута у элемента 
 
 Является наследником *Класса Component*
 
@@ -396,7 +407,6 @@ interface ICard {
     image: string;
     category: string;
     price: number;
-    isAvaliable: boolean;
 }
 ```
 
@@ -418,7 +428,7 @@ interface IContacts {
 
 Интерфейс данных о заказе в Model
 ```
-interface Order extends IOrderInfo, IContacts {
+interface IOrder extends IOrderInfo, IContacts {
     items: ICard[];
     total: number;
 }
@@ -428,6 +438,7 @@ interface Order extends IOrderInfo, IContacts {
 ```
 interface OrderResult extends Order {
     id: string;
+    total: number;
 }
 ```
 
@@ -443,6 +454,70 @@ export enum Message {
 }
 ```
 
+Список способов оплаты
+```
+enum Payment {
+    card = 'card',
+    cash = 'cash',
+}
+```
+
+Список labels на кнопке карточке в cardPreview
+```
+enum ButtonLabels {
+    isAvailable = 'В корзину',
+    inBasket = 'Убрать из корзины',
+    isUnvailable = 'Недоступно'
+}
+```
+
+Список состояний 
+```
+const enum AppStates {
+    basketOpened = 'basket',
+    cardPreviewOpened = 'cardPreview',
+    orderOpened = 'orderForm',
+    noOpened = '',
+}
+```
+
+Список событий
+```
+const enum AppStateEvents {
+    // state events
+    StateUpdate = 'state:update',
+    // cards events
+    CardsChanged = 'cards:changed',
+    // cardPreview events
+    CardPreviewOpen= 'cardPreview:open',
+    CardPreviewUpdate = 'cardPreview:update',
+    // basket events
+    BasketOpen = 'basket:open',
+    BasketChanged = 'basket:changed',
+    BasketUpdate = 'basket:update',
+    BasketSubmit = 'basket:submit',
+    // order events
+    OrderUpdate = 'order:update',
+    OrderSubmit = 'order:submit',
+    PaymentSelected = 'payment:select',
+    // contacts events
+    ContactsSubmit = 'contacts:submit',
+    // success events 
+    SuccessOpen = 'success:open',
+    SuccessSubmit = 'success:submit',
+    // modal events
+    ModalOpen = 'modal:open',
+    ModalClose = 'modal:close',
+}
+```
+Список событий на изменение полей в формах
+```
+const AppStateEventPatterns = {
+    OrderInputChange: /^order\..*:change/,
+    ContactsInputChange: /^contacts\..*:change/,
+}
+```
+
 Аннотация данных об ошибках валидации
 ```
 type FormErrors = Partial<Record<keyof IOrderInfo | keyof IContacts, string>>;
@@ -451,19 +526,23 @@ type FormErrors = Partial<Record<keyof IOrderInfo | keyof IContacts, string>>;
 
 ## Основные события
 
-* ```cards: changed``` - изменение элементов каталога
-* ```card: select``` - изменение отображения карточки для просмотра в модальном окне
-* ```modal: open``` - открытие модального окна
-* ```modal: close``` - закрытие модального окна
-* ```preview:changed``` - открытие выбранной карточки
-* ```order: submit``` - отправка формы заказа
-* ```formErrors:change``` - изменение состояния валидации формы
-* ```basket: open``` - открытие корзины
-* ```basket: changed``` - изменение состояния корзины (при удалении или добавлении товара в корзину)
-* ```orderInfo: open``` - открытие формы для внесения данных о заказе
-* ```orderContacts: open``` - открытие формы для внесения контактов
-* ```/^order\..*:change/``` - изменение полей ввода в форме
-* ```payment: select``` - изменение выбора способа оплаты
-* ```order:ready``` - заказ прошел валидацию и готов к отправке на сервер
+* ```state:update``` - изменение состояния приложения
+* ```cards:changed``` - изменение элементов каталога
+* ```cardPreview:open``` - открытие предпросмотра товара в модальном окне
+* ```cardPreview:update``` - изменение отображения предпросмотра товара в модальном окне (пользователь добавил/удалил товар в/из корзины)
+* ```basket:open``` - открытие корзины
+* ```basket:changed``` - изменение состояния корзины (при удалении или добавлении товара в корзину)
+* ```basket:update``` - изменение отображения корзины 
+* ```basket:submit``` - потверждение товаров в корзине и открытие формы для внесения данных о заказе
+* ```order:update``` - изменение отображения формы заказа
+* ```payment:select``` - изменение выбора способа оплаты
+* ```order:submit``` - подтверждение внесенных данных и открытие формы заполнения контактов
+* ```contacts:submit``` - потверждение введенных данных в полях формы контактов и отправка заказа на сервер
+* ```success:open``` - открытие окна со статусом об успешной отправке заказа на сервер
+* ```success:submit``` - закрытие окна со статусом об успешной отправке заказа на сервер
+* ```/^order\..*:change/``` - изменение полей ввода в форме с информацией о заказе
+* ```/^contacts\..*:change/``` - изменение полей ввода в форме с информацией о контактах пользователя
+* ```modal:open``` - открытие модального окна
+* ```modal:close``` - закрытие модального окна
 
 

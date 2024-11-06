@@ -45,22 +45,21 @@ const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), events);
 
 // Список состояния
-export const enum AppStates {
+export enum AppStates {
     basketOpened = 'basket',
     cardPreviewOpened = 'cardPreview',
     orderOpened = 'orderForm',
-    orderSent = 'orderSent',
     noOpened = '',
 }
 
 // Список событий
-export const enum AppStateEvents {
+export enum AppStateEvents {
     // state events
     StateUpdate = 'state:update',
     // cards events
     CardsChanged = 'cards:changed',
     // cardPreview events
-    CardPreviewOpen= 'cardPreview:open', // было cardPreview:selected
+    CardPreviewOpen= 'cardPreview:open', 
     CardPreviewUpdate = 'cardPreview:update',
     // basket events
     BasketOpen = 'basket:open',
@@ -79,7 +78,6 @@ export const enum AppStateEvents {
     // modal events
     ModalOpen = 'modal:open',
     ModalClose = 'modal:close',
-
 }
 
 const AppStateEventPatterns = {
@@ -154,7 +152,6 @@ events.on(AppStateEvents.CardPreviewOpen, (data: {
  */
 events.on(AppStateEvents.CardPreviewUpdate, (data: {id: string}) => {
     const cardData = app.getCard(data.id);
-    // Нужно ли каждый раз заново создавать или можно вызывать метод рендер с новыми параметрами
     
     modal.content = new Card(cloneTemplate(cardPreviewTemplate), events, {
         onClick: () => events.emit(AppStateEvents.BasketChanged, {id: data.id})
@@ -389,9 +386,12 @@ events.on(AppStateEventPatterns.ContactsInputChange, (data: { field: keyof ICont
  * При вызове выполняется отправка заказа на сервер
  */
 events.on(AppStateEvents.ContactsSubmit, () => {
-    app.setState(AppStates.orderSent);
     api.orderCards(app.getOrder())
-        .then(data => events.emit(AppStateEvents.StateUpdate, {total: data.total}))
+        .then(data => {
+            app.clearBasket();
+            app.clearOrder();
+            events.emit(AppStateEvents.SuccessOpen, {total: data.total})
+        })
         .catch(err => console.log(err))
 })
 
@@ -454,26 +454,24 @@ events.on(AppStateEvents.StateUpdate, (data?: {
     field: keyof IOrderInfo | keyof IContacts,
     total: number 
 }) => {
-    if (app.getState() === AppStates.cardPreviewOpened) {
-        events.emit(AppStateEvents.CardPreviewUpdate, {id: data.id});
-        main.counter = app.getBasketCardId().length;
-    }
-    if (app.getState() === AppStates.basketOpened) {
-        events.emit(AppStateEvents.BasketUpdate);
-        main.counter = app.getBasketCardId().length;
-    }
-    if (app.getState() === AppStates.orderOpened) {
-        (data && 'field' in data)?
-            events.emit(AppStateEvents.OrderUpdate, {field: data.field}):
-            events.emit(AppStateEvents.OrderUpdate);
-    }
-    if (app.getState() === AppStates.orderSent) {
-        app.clearOrder();
-        app.clearBasket();
-        events.emit(AppStateEvents.SuccessOpen, {total: data.total});
-    }
-    if (app.getState() === AppStates.noOpened) {
-        main.counter = app.getBasketCardId().length;
+    switch(app.getState()) {
+        case AppStates.cardPreviewOpened: {
+            events.emit(AppStateEvents.CardPreviewUpdate, {id: data.id});
+            main.counter = app.getBasketCardId().length;
+            break;
+        }
+        case AppStates.basketOpened: {
+            events.emit(AppStateEvents.BasketUpdate);
+            main.counter = app.getBasketCardId().length;
+            break;
+        }
+        case AppStates.orderOpened: {
+            (data && 'field' in data)?
+                events.emit(AppStateEvents.OrderUpdate, {field: data.field}):
+                events.emit(AppStateEvents.OrderUpdate);
+            break;
+        } 
+        default: main.counter = app.getBasketCardId().length;
     }
 })
 
