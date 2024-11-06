@@ -45,7 +45,7 @@ const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), events);
 
 // Список состояния
-export const enum AppStates {
+export enum AppStates {
     basketOpened = 'basket',
     cardPreviewOpened = 'cardPreview',
     orderOpened = 'orderForm',
@@ -54,13 +54,13 @@ export const enum AppStates {
 }
 
 // Список событий
-export const enum AppStateEvents {
+export enum AppStateEvents {
     // state events
     StateUpdate = 'state:update',
     // cards events
     CardsChanged = 'cards:changed',
     // cardPreview events
-    CardPreviewOpen= 'cardPreview:open', // было cardPreview:selected
+    CardPreviewOpen= 'cardPreview:open', 
     CardPreviewUpdate = 'cardPreview:update',
     // basket events
     BasketOpen = 'basket:open',
@@ -79,7 +79,6 @@ export const enum AppStateEvents {
     // modal events
     ModalOpen = 'modal:open',
     ModalClose = 'modal:close',
-
 }
 
 const AppStateEventPatterns = {
@@ -154,7 +153,6 @@ events.on(AppStateEvents.CardPreviewOpen, (data: {
  */
 events.on(AppStateEvents.CardPreviewUpdate, (data: {id: string}) => {
     const cardData = app.getCard(data.id);
-    // Нужно ли каждый раз заново создавать или можно вызывать метод рендер с новыми параметрами
     
     modal.content = new Card(cloneTemplate(cardPreviewTemplate), events, {
         onClick: () => events.emit(AppStateEvents.BasketChanged, {id: data.id})
