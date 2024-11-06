@@ -51,11 +51,28 @@ export class Card extends Component<ICardView> {
     }
 
     set category(value: string) {
-        if (value === Categories.soft) this._category.classList.add(settings.cardCategory.soft);
-        if (value === Categories.hard) this._category.classList.add(settings.cardCategory.hard);
-        if (value === Categories.additional) this._category.classList.add(settings.cardCategory.additional);
-        if (value === Categories.other) this._category.classList.add(settings.cardCategory.other);
-        if (value === Categories.button) this._category.classList.add(settings.cardCategory.button);
+        switch(value) {
+            case Categories.soft: {
+                this._category.classList.add(settings.cardCategory.soft);
+                break;
+            }
+            case Categories.hard: {
+                this._category.classList.add(settings.cardCategory.hard);
+                break;
+            }
+            case Categories.additional: {
+                this._category.classList.add(settings.cardCategory.additional);
+                break;
+            }
+            case Categories.other: {
+                this._category.classList.add(settings.cardCategory.other);
+                break;
+            }
+            case Categories.button: {
+                this._category.classList.add(settings.cardCategory.button);
+                break;
+            }
+        }
         
         this.setText(this._category, value);
     }

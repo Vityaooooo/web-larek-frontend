@@ -477,7 +477,6 @@ const enum AppStates {
     basketOpened = 'basket',
     cardPreviewOpened = 'cardPreview',
     orderOpened = 'orderForm',
-    orderSent = 'orderSent',
     noOpened = '',
 }
 ```
@@ -490,7 +489,7 @@ const enum AppStateEvents {
     // cards events
     CardsChanged = 'cards:changed',
     // cardPreview events
-    CardPreviewOpen= 'cardPreview:open', // было cardPreview:selected
+    CardPreviewOpen= 'cardPreview:open',
     CardPreviewUpdate = 'cardPreview:update',
     // basket events
     BasketOpen = 'basket:open',
@@ -535,9 +534,9 @@ type FormErrors = Partial<Record<keyof IOrderInfo | keyof IContacts, string>>;
 * ```basket:changed``` - изменение состояния корзины (при удалении или добавлении товара в корзину)
 * ```basket:update``` - изменение отображения корзины 
 * ```basket:submit``` - потверждение товаров в корзине и открытие формы для внесения данных о заказе
-* ```'order:update``` - изменение отображения формы заказа
+* ```order:update``` - изменение отображения формы заказа
 * ```payment:select``` - изменение выбора способа оплаты
-* ```'order:submit``` - подтверждение внесенных данных и открытие формы заполнения контактов
+* ```order:submit``` - подтверждение внесенных данных и открытие формы заполнения контактов
 * ```contacts:submit``` - потверждение введенных данных в полях формы контактов и отправка заказа на сервер
 * ```success:open``` - открытие окна со статусом об успешной отправке заказа на сервер
 * ```success:submit``` - закрытие окна со статусом об успешной отправке заказа на сервер
