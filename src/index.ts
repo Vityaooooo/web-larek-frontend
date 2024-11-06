@@ -19,6 +19,9 @@ const BASE_URL = process.env.API_ORIGIN;
 const API_PATH = '/api/weblarek';
 const CDN_PATH = '/content/weblarek';
 
+// const API_PATH = process.env.API_PATH;
+// const CDN_PATH = process.env.CDN_PATH;
+
 // Шаблоны
 const mainContainer = document.querySelector(settings.mainSelector) as HTMLTemplateElement;
 const cardCatalogTemplate = document.querySelector(settings.cardCatalogTemplate) as HTMLTemplateElement;

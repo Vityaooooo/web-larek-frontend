@@ -33,10 +33,6 @@ export class Main extends Component<IMain> {
     }
 
     set isLocked(value: boolean) {
-        if (value) {
-            this.wrapper.classList.add(settings.mainSettings.lockedClass);
-        } else {
-            this.wrapper.classList.remove(settings.mainSettings.lockedClass);
-        }
+        this.toggleClass(this.wrapper, settings.mainSettings.lockedClass, value);
     }
 }
