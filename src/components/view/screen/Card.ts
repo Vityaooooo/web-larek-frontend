@@ -2,7 +2,6 @@ import { ICardView, ICardActions } from '../../../types/view/screen/Card';
 import { Component } from '../../base/Component';
 import { settings } from '../../../utils/constants';
 import { IEvents } from '../../../types/base/events';
-import { ensureElement } from '../../../utils/utils';
 import { ButtonLabels } from '../../../types';
 
 const enum Categories {
@@ -30,15 +29,16 @@ export class Card extends Component<ICardView> {
         this._price = container.querySelector(settings.cardSettings.price);
 
         if (container.classList.contains(settings.cardSettings.compactClass)) {
-            this._id = ensureElement<HTMLElement>(settings.cardSettings.id,this.container);
-            this._buttonDelete = ensureElement<HTMLButtonElement>(settings.cardSettings.delete, this.container);
+            this._id = container.querySelector(settings.cardSettings.id);
+            this._buttonDelete = container.querySelector(settings.cardSettings.delete);
             this._buttonDelete.addEventListener('click', action.onClick);
         } else {
-            this._image = ensureElement<HTMLImageElement>(settings.cardSettings.image, this.container);
-            this._category = ensureElement<HTMLElement>(settings.cardSettings.category, this.container);
+            this._image = container.querySelector(settings.cardSettings.image);
+            this._category = container.querySelector(settings.cardSettings.category);
+            
             if (container.classList.contains(settings.cardSettings.expendedClass)) {
-                this._description = ensureElement<HTMLElement>(settings.cardSettings.description, this.container);
-                this._buttonBasket = ensureElement<HTMLButtonElement>(settings.cardSettings.toBasket, this.container);
+                this._description = container.querySelector(settings.cardSettings.description);
+                this._buttonBasket = container.querySelector(settings.cardSettings.toBasket);
                 this._buttonBasket.addEventListener('click', action.onClick);
             } else {
                 this.container.addEventListener('click', action.onClick);
