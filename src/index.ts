@@ -2,13 +2,11 @@ import './scss/styles.scss';
 import { AppState } from './components/model/AppState';
 import { CardApi } from './components/model/CardApi';
 import { EventEmitter } from './components/base/events';
-import { mocks } from './types/mocks';
-import { ICard, IOrder, ButtonLabels, Message, IOrderInfo, IContacts } from './types';
+import { ICard, ButtonLabels, Message, IOrderInfo, IContacts } from './types';
 import { settings } from './utils/constants'
 import { Main } from './components/view/screen/Main';
 import { cloneTemplate } from './utils/utils';
-import { Card } from './components/view/screen/Card'; 
-import { ICardView } from './types/view/screen/Card';
+import { Card } from './components/view/screen/Card';
 import { Modal } from './components/view/partial/Modal';
 import { Basket } from './components/view/partial/Basket';
 import { Order } from './components/view/partial/Order';
