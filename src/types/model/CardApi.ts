@@ -1,6 +1,6 @@
-import { ICard, Order, OrderResult } from '../index';
+import { ICard, IOrder, OrderResult } from '../index';
 
 export interface ICardApi {    
     getCards: () => Promise<ICard[]>;
-    orderCards: (order: Order) => Promise<OrderResult>;
+    orderCards: (order: IOrder) => Promise<OrderResult>;
 }

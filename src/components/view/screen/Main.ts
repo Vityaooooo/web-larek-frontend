@@ -2,7 +2,7 @@ import { IMain } from '../../../types/view/screen/Main';
 import { Component } from '../../base/Component';
 import { IEvents } from '../../../types/base/events';
 import { settings } from '../../../utils/constants';
-import { ICardView, ICardActions, CardConstructor } from '../../../types/view/screen/Card';
+import { AppStateEvents } from '../../..';
 
 export class Main extends Component<IMain> {
     protected _catalog: HTMLElement;
@@ -19,9 +19,8 @@ export class Main extends Component<IMain> {
         this._catalog = document.querySelector(settings.gallerySelector);
         this.wrapper = document.querySelector(settings.mainSettings.wrapper);
 
-        //@TODO: add event listener to button basket
         this._basket.addEventListener('click', () => {
-            this.events.emit('basket:open');
+            this.events.emit(AppStateEvents.BasketOpen);
         });
     }
 

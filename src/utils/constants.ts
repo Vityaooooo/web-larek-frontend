@@ -49,8 +49,11 @@ export const settings: Settings = {
 	},
 
     formSettings: {
+		order_name: 'order',
+		contacts_name: 'contacts',
         error: '.form__errors',
-        submit: '.order__button',
+        submit_order: '.order__button',
+		submit_contacts: '.contacts__button',
     },
 
 	orderInfoTemplate: '#order',
@@ -58,6 +61,8 @@ export const settings: Settings = {
         isCash: 'button[name=cash]',
         isCard: 'button[name=card]',
 		address: 'input[name=address]',
+		button_active: 'button_alt-active',
+		button_unactive: 'button_alt',
 	},
 
     contactsTemplate: '#contacts',

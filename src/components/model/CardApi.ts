@@ -1,5 +1,5 @@
 import { ICardApi } from '../../types/model/CardApi';
-import { ICard, Order, OrderResult } from '../../types';
+import { ICard, IOrder, OrderResult } from '../../types';
 import { Api } from '../base/api'
 import { ApiListResponse } from '../../types/base/api';
 
@@ -25,7 +25,7 @@ export class CardApi extends Api implements ICardApi {
             )
     }
 
-    orderCards(order: Order) {
+    orderCards(order: IOrder) {
         const uri = this.apiPath + '/order';
 
         return this.post(uri, order)

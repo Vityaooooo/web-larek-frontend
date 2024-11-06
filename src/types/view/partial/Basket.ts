@@ -1,5 +1,5 @@
 export interface IBasket  {
     items: HTMLElement[];
-    total: number;
-    selectedCards: string[];
+    total: string;
+    disabled: boolean;
 }

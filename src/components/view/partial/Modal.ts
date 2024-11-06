@@ -2,6 +2,7 @@ import { Component } from '../../base/Component';
 import { IModal } from '../../../types/view/partial/Modal';
 import { IEvents } from '../../../types/base/events';
 import { settings } from '../../../utils/constants';
+import { AppStateEvents } from '../../..';
 
 export class Modal extends Component<IModal> {
     protected _content: HTMLElement;
@@ -23,15 +24,14 @@ export class Modal extends Component<IModal> {
     }
 
     open() {
-        this.toggleClass(this.container, settings.modalSettings.activeClass);
-        this.events.emit('modal:open');
+        this.toggleClass(this.container, settings.modalSettings.activeClass, true);
+        this.events.emit(AppStateEvents.ModalOpen);
     }
 
     close() {
-        this.toggleClass(this.container, settings.modalSettings.activeClass);
-        // Question
-        // this.content = null;
-        this.events.emit('modal:close');
+        this.toggleClass(this.container, settings.modalSettings.activeClass, false);
+        this.content = null;
+        this.events.emit(AppStateEvents.ModalClose);
     }
 
     render(data: IModal): HTMLElement {

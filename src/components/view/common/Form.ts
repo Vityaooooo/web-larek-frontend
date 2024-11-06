@@ -14,8 +14,12 @@ export class Form<T> extends Component<IForm> {
     constructor(protected readonly container: HTMLFormElement, protected events: IEvents) {
         super(container);
 
-        this._error = container.querySelector(settings.formSettings.error)!;
-        this._submit = container.querySelector(settings.formSettings.submit)!;
+        this._error = container.querySelector(settings.formSettings.error);
+        
+        if (this.container.name === settings.formSettings.order_name)
+            this._submit = container.querySelector(settings.formSettings.submit_order);
+        if (this.container.name === settings.formSettings.contacts_name)
+            this._submit = container.querySelector(settings.formSettings.submit_contacts);
         
         this.container.addEventListener('input', (e: Event) => {
             const target = e.target as HTMLInputElement;
@@ -41,14 +45,19 @@ export class Form<T> extends Component<IForm> {
         this.setDisabled(this._submit, value);
     }
 
-    set errors(value: Message) {
-        // @TODO: How do better
+    set error(value: Message) {
         this.setText(this._error, value);
     }
 
+    set focus(value: keyof T) {
+        const input = this[`_${String(value)}` as keyof this];
+        if (input instanceof HTMLElement && typeof input.focus === 'function')
+            input.focus();
+    }
+
     render(state: Partial<T> & IForm): HTMLFormElement {
-        const {valid, message, ...inputs} = state;
-        super.render({valid, message});
+        const {valid, error, ...inputs} = state;
+        super.render({valid, error});
         Object.assign(this, inputs);
         return this.container;
     }

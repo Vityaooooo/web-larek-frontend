@@ -3,6 +3,7 @@ import { Component } from '../../base/Component';
 import { settings } from '../../../utils/constants';
 import { IEvents } from '../../../types/base/events';
 import { ensureElement } from '../../../utils/utils';
+import { ButtonLabels } from '../../../types';
 
 const enum Categories {
     soft = 'софт-скил',
@@ -28,29 +29,20 @@ export class Card extends Component<ICardView> {
         this._title = container.querySelector(settings.cardSettings.title);
         this._price = container.querySelector(settings.cardSettings.price);
 
-
         if (container.classList.contains(settings.cardSettings.compactClass)) {
-            this._id = ensureElement<HTMLElement>(settings.cardSettings.id, container);
-            this._buttonDelete = ensureElement<HTMLButtonElement>(settings.cardSettings.delete, container);
-            // @TODO: add eventListener to button
-            this._buttonBasket.addEventListener('click', () => {
-                this.events.emit('basket:changed', {id: this.container.dataset.id});
-            });
+            this._id = ensureElement<HTMLElement>(settings.cardSettings.id,this.container);
+            this._buttonDelete = ensureElement<HTMLButtonElement>(settings.cardSettings.delete, this.container);
+            this._buttonDelete.addEventListener('click', action.onClick);
         } else {
+            this._image = ensureElement<HTMLImageElement>(settings.cardSettings.image, this.container);
+            this._category = ensureElement<HTMLElement>(settings.cardSettings.category, this.container);
             if (container.classList.contains(settings.cardSettings.expendedClass)) {
-                this._description = ensureElement<HTMLElement>(settings.cardSettings.description, container);
-                this._buttonBasket = ensureElement<HTMLButtonElement>(settings.cardSettings.toBasket, container);
-                // @TODO: add eventListener to button
-                this._buttonBasket.addEventListener('click', () => {
-                    this.events.emit('basket:changed', {id: this.container.dataset.id})
-                })
-            } 
-            this._image = ensureElement<HTMLImageElement>(settings.cardSettings.image, container);
-            this._category = ensureElement<HTMLElement>(settings.cardSettings.category, container);
-            // @TODO: add eventListener to button
-            this.container.addEventListener('click', () => {
-                this.events.emit('preview:changed', {id: this.container.dataset.id})
-            })
+                this._description = ensureElement<HTMLElement>(settings.cardSettings.description, this.container);
+                this._buttonBasket = ensureElement<HTMLButtonElement>(settings.cardSettings.toBasket, this.container);
+                this._buttonBasket.addEventListener('click', action.onClick);
+            } else {
+                this.container.addEventListener('click', action.onClick);
+            }
         }
     }
 
@@ -68,6 +60,16 @@ export class Card extends Component<ICardView> {
         this.setText(this._category, value);
     }
 
+    set buttonLabel(value: ButtonLabels) {
+        this._buttonBasket.textContent = value;
+        if (value === ButtonLabels.isUnvailable) 
+            this.setDisabled(this._buttonBasket, true);
+    }
+
+    set indexLabel(value: string) {
+        this.setText(this._id, value);
+    }
+
     set title(value: string) {
         this.setText(this._title, value);
     }
@@ -78,9 +80,6 @@ export class Card extends Component<ICardView> {
 
     set price(value: string) {
         this.setText(this._price, value);
-        if (value === 'Бесценно' && this._buttonBasket) {
-            this.setDisabled(this._buttonBasket, true);
-        }
     }
 
     set id(value: string) {
@@ -90,6 +89,4 @@ export class Card extends Component<ICardView> {
     get id(): string {
         return this.container.dataset.id || '';
     }
-
-
 }

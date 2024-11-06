@@ -15,8 +15,6 @@ export interface ICardView {
     price: string;
     category: string;
     image: string;
-    // isExpended: boolean;
-    // isCompact: boolean;
-    // isAvaliable: boolean;
-    // buttonLabel: ButtonLabels;
+    buttonLabel: ButtonLabels;
+    indexLabel: string;
 }

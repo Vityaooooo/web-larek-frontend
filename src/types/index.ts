@@ -17,7 +17,7 @@ export interface IContacts {
     phone: string;
 }
 
-export interface Order extends IOrderInfo, IContacts {
+export interface IOrder extends IOrderInfo, IContacts {
     items: string[];
     total: number;
 }
@@ -27,21 +27,24 @@ export interface OrderResult {
     total: number;
 }
 
-export type Payment = 'cash' | 'card';
+export enum Payment {
+    card = 'card',
+    cash = 'cash',
+}
 
 export enum Message {
     phone = 'Укажите номер телефона',
     email = 'Укажите почту',
-    payment = 'укажите способ оплаты',
-    address = 'Укажите адресс доставки',
+    payment = 'Укажите способ оплаты',
+    address = 'Укажите адрес доставки',
     form = 'Заполните поля',
     no = '',
 }
 
 export enum ButtonLabels {
     isAvailable = 'В корзину',
-    inBasket = 'В корзине',
-    isUnavailable = 'Недоступно',
+    inBasket = 'Убрать из корзины',
+    isUnvailable = 'Недоступно'
 }
 
 export type FormErrors = Partial<Record<keyof IOrderInfo | keyof IContacts, string>>;
