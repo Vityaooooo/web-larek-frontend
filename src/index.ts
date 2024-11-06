@@ -45,7 +45,7 @@ const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), events);
 
 // Список состояния
-export const enum AppStates {
+export enum AppStates {
     basketOpened = 'basket',
     cardPreviewOpened = 'cardPreview',
     orderOpened = 'orderForm',
@@ -54,13 +54,13 @@ export const enum AppStates {
 }
 
 // Список событий
-export const enum AppStateEvents {
+export enum AppStateEvents {
     // state events
     StateUpdate = 'state:update',
     // cards events
     CardsChanged = 'cards:changed',
     // cardPreview events
-    CardPreviewOpen= 'cardPreview:open', // было cardPreview:selected
+    CardPreviewOpen= 'cardPreview:open', 
     CardPreviewUpdate = 'cardPreview:update',
     // basket events
     BasketOpen = 'basket:open',
@@ -79,7 +79,6 @@ export const enum AppStateEvents {
     // modal events
     ModalOpen = 'modal:open',
     ModalClose = 'modal:close',
-
 }
 
 const AppStateEventPatterns = {
