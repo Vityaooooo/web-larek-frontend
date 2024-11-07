@@ -16,9 +16,9 @@ export class Basket extends Component<IBasket> {
         this._button = container.querySelector(settings.basketModal.button);
         
         this.setDisabled(this._button, true);
-        
+
         this._button.addEventListener('click', () => {
-            this.events.emit(appStateEvents.BasketSubmit);
+            this.events.emit(appStateEvents.basketSubmit);
         });
     }
 

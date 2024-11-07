@@ -14,7 +14,7 @@ export class Success extends Component<ISuccess> {
         this._close = container.querySelector(settings.successModal.button);
     
         this._close.addEventListener('click', () => {
-            this.events.emit(appStateEvents.SuccessSubmit);
+            this.events.emit(appStateEvents.successSubmit);
         })
     }
 

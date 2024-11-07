@@ -19,7 +19,7 @@ export class Main extends Component<IMain> {
         this.wrapper = document.querySelector(settings.mainSettings.wrapper);
 
         this._basket.addEventListener('click', () => {
-            this.events.emit(appStateEvents.BasketOpen);
+            this.events.emit(appStateEvents.basketOpen);
         });
     }
 

@@ -16,11 +16,11 @@ export class Order extends Form<IOrderInfo> {
         this._address = container.querySelector(settings.orderInfoSettings.address)!;
     
         this._card.addEventListener('click', () => {
-            this.events.emit(appStateEvents.PaymentSelected, {payment: this._card.name})
+            this.events.emit(appStateEvents.paymentSelected, {payment: this._card.name})
         });
 
         this._cash.addEventListener('click', () => {
-            this.events.emit(appStateEvents.PaymentSelected, {payment: this._cash.name})
+            this.events.emit(appStateEvents.paymentSelected, {payment: this._cash.name})
         });
     }
 

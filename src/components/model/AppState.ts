@@ -24,7 +24,7 @@ export class AppState extends Model<{}> implements IAppState {
 
     loadCards(cards: ICard[]) {
         cards.forEach(card => this.cards.set(card.id, card));
-        this.emitChanges(appStateEvents.CardsChanged, this.cards.values());
+        this.emitChanges(appStateEvents.cardsChanged, this.cards.values());
     }
 
     getCard(id: string) {
@@ -33,18 +33,18 @@ export class AppState extends Model<{}> implements IAppState {
 
     addCard(id: string) {
         this.basket.set(id, this.getCard(id))
-        this.emitChanges(appStateEvents.StateUpdate, {id});
+        this.emitChanges(appStateEvents.stateUpdate, {id});
     }
 
     removeCard(id: string) {
         this.basket.delete(id);
-        this.emitChanges(appStateEvents.StateUpdate, {id});
+        this.emitChanges(appStateEvents.stateUpdate, {id});
     }
 
     setOrderFiedls(field: keyof IOrderInfo | keyof IContacts, value: string) {
         this.order[field] = value;
         this.validateOrder();
-        this.emitChanges(appStateEvents.StateUpdate, {field});
+        this.emitChanges(appStateEvents.stateUpdate, {field});
     }
 
     validateOrder() {
@@ -72,7 +72,7 @@ export class AppState extends Model<{}> implements IAppState {
 
     clearBasket() {
         this.basket.clear();
-        this.emitChanges(appStateEvents.StateUpdate);
+        this.emitChanges(appStateEvents.stateUpdate);
     }
 
     clearOrder() {
@@ -94,7 +94,7 @@ export class AppState extends Model<{}> implements IAppState {
 
     setPreview(card: ICard) {
         this.preview = card.id;
-        this.emitChanges(appStateEvents.CardPreviewOpen, card);
+        this.emitChanges(appStateEvents.cardPreviewOpen, card);
     }
 
     formatCurrency(value: number) {

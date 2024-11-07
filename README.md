@@ -483,32 +483,32 @@ const enum appStates {
 ```
 const enum appStateEvents {
     // state events
-    StateUpdate = 'state:update',
+    stateUpdate = 'state:update',
     // cards events
-    CardsChanged = 'cards:changed',
+    cardsChanged = 'cards:changed',
     // cardPreview events
-    CardPreviewOpen= 'cardPreview:open',
+    cardPreviewOpen= 'cardPreview:open',
     // basket events
-    BasketOpen = 'basket:open',
-    BasketChanged = 'basket:changed',
-    BasketSubmit = 'basket:submit',
+    basketOpen = 'basket:open',
+    basketChanged = 'basket:changed',
+    basketSubmit = 'basket:submit',
     // order events
-    OrderSubmit = 'order:submit',
-    PaymentSelected = 'payment:select',
+    orderSubmit = 'order:submit',
+    paymentSelected = 'payment:select',
     // contacts events
-    ContactsSubmit = 'contacts:submit',
+    contactsSubmit = 'contacts:submit',
     // success events 
-    SuccessSubmit = 'success:submit',
+    successSubmit = 'success:submit',
     // modal events
-    ModalOpen = 'modal:open',
-    ModalClose = 'modal:close',
+    modalOpen = 'modal:open',
+    modalClose = 'modal:close',
 }
 ```
 Список событий на изменение полей в формах
 ```
 const appStateEventPatterns = {
-    OrderInputChange: /^order\..*:change/,
-    ContactsInputChange: /^contacts\..*:change/,
+    orderInputChange: /^order\..*:change/,
+    contactsInputChange: /^contacts\..*:change/,
 }
 ```
 
