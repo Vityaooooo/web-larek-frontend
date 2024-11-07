@@ -1,4 +1,4 @@
-import { AppStates } from '../..';
+import { appStates } from '../../index';
 import { ICard, IOrderInfo, IContacts, IOrder, Message, FormErrors } from '../index';
 
 export interface IAppState {
@@ -14,8 +14,8 @@ export interface IAppState {
     clearBasket(): void;
     getTotal(): number;
     setPreview(card: ICard): void;
-    validateOrder(): boolean;
-    setState(value: AppStates): void;
+    validateOrder(): void;
+    setState(value: appStates): void;
     getState(): string;
     getMessages(): FormErrors;
 }

@@ -3,7 +3,7 @@ import { AppState } from './components/model/AppState';
 import { CardApi } from './components/model/CardApi';
 import { EventEmitter } from './components/base/events';
 import { ICard, ButtonLabels, Message, IOrderInfo, IContacts } from './types';
-import { settings } from './utils/constants'
+import { settings, API_URL, CDN_URL, appStateEvents, appStateEventPatterns } from './utils/constants'
 import { Main } from './components/view/screen/Main';
 import { cloneTemplate } from './utils/utils';
 import { Card } from './components/view/screen/Card';
@@ -14,11 +14,15 @@ import { Contacts } from './components/view/partial/Contacts';
 import { Success } from './components/view/partial/Success';
 
 const BASE_URL = process.env.API_ORIGIN;
-const API_PATH = '/api/weblarek';
-const CDN_PATH = '/content/weblarek';
 
-// const API_PATH = process.env.API_PATH;
-// const CDN_PATH = process.env.CDN_PATH;
+// Список состояния
+export enum appStates {
+    basketOpened = 'basket',
+    cardPreviewOpened = 'cardPreview',
+    orderOpened = 'orderForm',
+    successOpened = 'success',
+    noOpened = '',
+}
 
 // Шаблоны
 const mainContainer = document.querySelector(settings.mainSelector) as HTMLTemplateElement;
@@ -33,7 +37,7 @@ const modalTemplate = document.querySelector(settings.modalTemplate) as HTMLTemp
 
 // Классы слоя данных
 const events = new EventEmitter();
-const api = new CardApi(BASE_URL, API_PATH, CDN_PATH);
+const api = new CardApi(BASE_URL, API_URL, CDN_URL);
 const app = new AppState({}, events);
 
 // Классы слоя представления
@@ -44,56 +48,15 @@ const order = new Order(cloneTemplate(orderTemplate), events);
 const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), events);
 
-// Список состояния
-export enum AppStates {
-    basketOpened = 'basket',
-    cardPreviewOpened = 'cardPreview',
-    orderOpened = 'orderForm',
-    noOpened = '',
-}
-
-// Список событий
-export enum AppStateEvents {
-    // state events
-    StateUpdate = 'state:update',
-    // cards events
-    CardsChanged = 'cards:changed',
-    // cardPreview events
-    CardPreviewOpen= 'cardPreview:open', 
-    CardPreviewUpdate = 'cardPreview:update',
-    // basket events
-    BasketOpen = 'basket:open',
-    BasketChanged = 'basket:changed',
-    BasketUpdate = 'basket:update',
-    BasketSubmit = 'basket:submit',
-    // order events
-    OrderUpdate = 'order:update',
-    OrderSubmit = 'order:submit',
-    PaymentSelected = 'payment:select',
-    // contacts events
-    ContactsSubmit = 'contacts:submit',
-    // success events 
-    SuccessOpen = 'success:open',
-    SuccessSubmit = 'success:submit',
-    // modal events
-    ModalOpen = 'modal:open',
-    ModalClose = 'modal:close',
-}
-
-const AppStateEventPatterns = {
-    OrderInputChange: /^order\..*:change/,
-    ContactsInputChange: /^contacts\..*:change/,
-}
-
 /**
  * Обрабатывает изменение списка карточек в каталоге в model
  * 
- * @event AppStateEvents.CardsChanged
+ * @event appStateEvents.CardsChanged
  * @param {Iterable<ICard>} cards - Итератор с обновленным списком карточек товаров
  * 
  * При вызове обновляет каталог в слое View, создавая новые экземпляры карточек на основе шаблона
  */
-events.on(AppStateEvents.CardsChanged, (cards: Iterable<ICard>) => {
+events.on(appStateEvents.CardsChanged, (cards: Iterable<ICard>) => {
     main.catalog = Array.from(cards).map(cardData => {
         const card = new Card(cloneTemplate(cardCatalogTemplate), events, {
             onClick: () => app.setPreview(cardData),
@@ -109,11 +72,11 @@ events.on(AppStateEvents.CardsChanged, (cards: Iterable<ICard>) => {
 /**
  * Открывает предпросмотр карточки товара в модальном окне
  * 
- * @event AppStateEvents.CardPreviewOpen
+ * @event appStateEvents.CardPreviewOpen
  * @param {Object} data - Объект с информацией о карточке товара
  * 
  */
-events.on(AppStateEvents.CardPreviewOpen, (data: {
+events.on(appStateEvents.CardPreviewOpen, (data: {
     id: string, 
     title: string,
     description: string;
@@ -121,7 +84,7 @@ events.on(AppStateEvents.CardPreviewOpen, (data: {
     category: string;
     price: number;
 })  => {
-    app.setState(AppStates.cardPreviewOpened);
+    app.setState(appStates.cardPreviewOpened);
     
     const buttonLabel = app.getBasketCardId().includes(data.id) ? 
         ButtonLabels.inBasket: 
@@ -131,7 +94,7 @@ events.on(AppStateEvents.CardPreviewOpen, (data: {
     
     modal.open();
     modal.content = new Card(cloneTemplate(cardPreviewTemplate), events, {
-        onClick: () => events.emit(AppStateEvents.BasketChanged, {id: data.id})
+        onClick: () => events.emit(appStateEvents.BasketChanged, {id: data.id})
     }).render({
         ...data,
         price: app.formatCurrency(data.price),
@@ -140,40 +103,15 @@ events.on(AppStateEvents.CardPreviewOpen, (data: {
 });
 
 /**
- * Обрабатывает изменение модального окна с предпросмотром карточки товара
- * 
- * @event AppStateEvents.CardPreviewUpdate
- * @param {Object} data - Объект с информацией о карточке товара
- * @param {string} data.id - Идентификатор карточки товара для получения ее данных
- * 
- * При вызове создает новый экземпляр карточки для предпросмотра в модальном
- * окне в соответствии с действиями пользователя (товар добавлен в корзину или
- * убран из нее)
- */
-events.on(AppStateEvents.CardPreviewUpdate, (data: {id: string}) => {
-    const cardData = app.getCard(data.id);
-    
-    modal.content = new Card(cloneTemplate(cardPreviewTemplate), events, {
-        onClick: () => events.emit(AppStateEvents.BasketChanged, {id: data.id})
-    }).render({
-        ...cardData,
-        buttonLabel: app.getBasketCardId().includes(data.id)?
-            ButtonLabels.inBasket:
-            ButtonLabels.isAvailable,
-        price: app.formatCurrency(cardData.price),
-    });
-});
-
-/**
  * Обрабатывает состояния корзины
  * 
- * @event AppStateEvents.BasketChanged
+ * @event appStateEvents.BasketChanged
  * @param {Object} data - Объект с информацией о карточке товара
  * @param {string} data.id - Идентификатор карточки товара для получения ее данных
  * 
  * При вызове выполняет добавление товара в корзину или его удаление
  */
-events.on(AppStateEvents.BasketChanged, (data: {id: string}) => {
+events.on(appStateEvents.BasketChanged, (data: {id: string}) => {
     if (app.getBasketCardId().includes(data.id)) {
         app.removeCard(data.id);
     } else {
@@ -182,74 +120,31 @@ events.on(AppStateEvents.BasketChanged, (data: {id: string}) => {
 })
 
 /**
- * Изменяет отображение корзины
- * 
- * @event AppStateEvents.BasketUpdate
- * 
- * При вызове выполняет ререндер компонента "Basket" 
- * в соответствии с внесенными изменениям 
- */
-events.on(AppStateEvents.BasketUpdate, () => {
-    basket.render({
-        total: app.formatCurrency(app.getTotal()),
-        disabled: app.getBasketCardId().length === 0 ? 
-            true: 
-            false,
-        items: app.getBasketCardId().map((cardId, index) => {
-            const cardData = app.getCard(cardId);
-            return new Card(cloneTemplate(cardBasketTemplate), events, {
-                onClick: () => events.emit(AppStateEvents.BasketChanged, {id: cardData.id})
-            }).render({
-                title: cardData.title,
-                price: app.formatCurrency(cardData.price),
-                indexLabel: (index + 1).toString(),
-            });
-        })
-    });
-});
-
-/**
  * Отвечает за отображение корзины
  * 
- * @event AppStateEvents.BasketOpen
+ * @event appStateEvents.BasketOpen
  * 
  * При вызове выполняет рендер компонента "Basket" и отображает
  * его содержимое в модальном окне
  */
-events.on(AppStateEvents.BasketOpen, () => {
-    app.setState(AppStates.basketOpened);
-    
+events.on(appStateEvents.BasketOpen, () => {
+    app.setState(appStates.basketOpened);
     app.clearOrder();
+
     modal.open();
-    modal.content = basket.render({
-        total: app.formatCurrency(app.getTotal()),
-        disabled: app.getBasketCardId().length === 0 ? 
-            true: 
-            false,
-        items: app.getBasketCardId().map((cardId, index) => {
-            const cardData = app.getCard(cardId);
-            return new Card(cloneTemplate(cardBasketTemplate), events, {
-                onClick: () => events.emit(AppStateEvents.BasketChanged, {id: cardData.id})
-            }).render({
-                title: cardData.title,
-                price: app.formatCurrency(cardData.price),
-                indexLabel: (index +1).toString(),
-            });
-        })
-    });
+    modal.content = basket.render();
 });
 
 /**
  * Отвечает за отображение формы заполнения информации о заказе
  * 
- * @event AppStateEvents.BasketSubmit
+ * @event appStateEvents.BasketSubmit
  * 
  * При вызове выполняет рендер компонента "Order" и отображает
  * его содержимое в модальном окне
  */
-events.on(AppStateEvents.BasketSubmit, () => {
-    app.setState(AppStates.orderOpened);
-    app.clearOrder();
+events.on(appStateEvents.BasketSubmit, () => {
+    app.setState(appStates.orderOpened);
 
     modal.content = order.render({
         payment: app.getOrder().payment,
@@ -269,7 +164,7 @@ events.on(AppStateEvents.BasketSubmit, () => {
  * Отвечает за добавление данных в заказ в Model из формы
  * заполнения информации о заказе
  * 
- * @event AppStateEventPatterns.OrderInputChange
+ * @event appStateEventPatterns.OrderInputChange
  * @param {Object} data - Объект с информацией о input
  * @param {keyof IOrderInfo} data.field - Имя поля ввода
  * @param {string} data.value - Внесенные данные в поле ввода
@@ -277,21 +172,224 @@ events.on(AppStateEvents.BasketSubmit, () => {
  * При вызове выполняет заполнение данных об заказе в Model в соответствии с именем поля ввода
  * и внесенным значением
  */
-events.on(AppStateEventPatterns.OrderInputChange, (data: { field: keyof IOrderInfo, value: string }) => {
+events.on(appStateEventPatterns.OrderInputChange, (data: { field: keyof IOrderInfo, value: string }) => {
     app.setOrderFiedls(data.field, data.value);
-    events.emit(AppStateEvents.StateUpdate, {field: data.field});
 })
 
 /**
- * Изменяет отображение форм заполнения информации о заказе и заполнения контактов
+ * Отвечает за изменения способа выбора оплаты в Model
  * 
- * @event AppStateEvents.OrderUpdate
+ * @event appStateEvents.PaymentSelected
+ * @param {Object} data - Объект с информацией о способе оплаты
+ * @param {keyof IOrderInfo} data.payment - Название способа оплаты
+ */
+events.on(appStateEvents.PaymentSelected, (data: {payment: keyof IOrderInfo}) => {
+    app.setOrderFiedls('payment', data.payment);
+})
+
+/**
+ * Отвечает за отображение формы заполнения контактов пользователя
+ * 
+ * @event appStateEvents.OrderSubmit
+ * При вызове выполняет рендер компонента "Contacts" и отображает
+ * его содержимое в модальном окне
+ */
+events.on(appStateEvents.OrderSubmit, () => {
+    modal.content = contacts.render({
+        email: app.getOrder().email,
+        phone: app.getOrder().phone,
+        valid: !(app.getOrder().email && app.getOrder().phone),
+        error: (app.getMessages().email !== undefined && app.getMessages().phone !== undefined)?
+                    Message.form:
+                    app.getMessages().email !== undefined?
+                        Message.email:
+                        app.getMessages().phone !== undefined?
+                            Message.phone:
+                            Message.no,     
+    })
+})
+
+/**
+ * Отвечает за добавление данных в заказ в Model из формы
+ * заполнения контактов пользователя
+ * 
+ * @event appStateEventPatterns.OrderInputChange
+ * @param {Object} data - Объект с информацией о input
+ * @param {keyof IContacts} data.field - Имя поля ввода
+ * @param {string} data.value - Внесенные данные в поле ввода
+ * 
+ * При вызове выполняет заполнение данных об заказе в Model в соответствии с именем поля ввода
+ * и внесенным значением
+ */
+events.on(appStateEventPatterns.ContactsInputChange, (data: { field: keyof IContacts, value: string }) => {
+    app.setOrderFiedls(data.field, data.value);
+})
+
+/**
+ * Отвечает за отправку данных на сервер после нажатия пользователя
+ * на кнопку оформления заказа
+ * 
+ * @event appStateEvents.ContactsSubmit
+ * При вызове выполняется отправка заказа на сервер
+ */
+events.on(appStateEvents.ContactsSubmit, () => {
+    api.orderCards(app.getOrder())
+        .then(data => {
+            app.setState(appStates.successOpened);
+            app.clearBasket();
+            app.clearOrder();
+
+            modal.content = success.render({
+                total: app.formatCurrency(data.total),
+            });
+        })
+        .catch(err => console.log(err))
+})
+
+/**
+ * Отвечает за закрытие окна с информацией об успешном оформлении заказа
+ * 
+ * @event appStateEvents.SuccessSubmit
+ */
+events.on(appStateEvents.SuccessSubmit, () => {
+    modal.close();
+})
+
+/**
+ * Отвечает за отображение модального окна на странице
+ * 
+ * @event appStateEvents.ModalOpen
+ */
+events.on(appStateEvents.ModalOpen, () => {
+    main.isLocked = true;
+});
+
+/**
+ * Отвечает за скрытие модального окна со страницы
+ * 
+ * @event appStateEvents.ModalClose
+ */
+events.on(appStateEvents.ModalClose, () => {
+    app.setState(appStates.noOpened);
+    updateState();
+
+    main.isLocked = false;
+});
+
+/** 
+ * Событие, осуществляющее изменение состояния приложения  
+ *  
+ * @event AppStateEvents.StateUpdate 
+ * @param {Object} data - Объект с данными для изменения состояния 
+ * @param {string} data.id - id карточки 
+ * @param {keyof IOrderInfo | keyof IContacts} data.field - Имя поля ввода 
+ */ 
+
+events.on(appStateEvents.StateUpdate, (data?: { 
+    id: string,  
+    field: keyof IOrderInfo | keyof IContacts,
+}) => { 
+    updateState({
+        id: data.id, 
+        field: data.field,
+    });
+}) 
+
+/**
+ * Функция, отвечает за изменение состояния приложения 
+ * 
+ * @param {Object} data - Объект с данными для изменения состояния
+ * @param {string} data.id - id карточки
+ * @param {keyof IOrderInfo | keyof IContacts} data.field - Имя поля ввода
+ */
+function updateState(data?: {
+    id?: string, 
+    field?: keyof IOrderInfo | keyof IContacts,
+}) {
+    switch(app.getState()) {
+        case appStates.cardPreviewOpened: {
+            renderCardPreview({id: data.id});
+            renderBasket();
+            main.counter = app.getBasketCardId().length;
+            break;
+        }
+        case appStates.basketOpened: {
+            renderBasket();
+            main.counter = app.getBasketCardId().length;
+            break;
+        }
+        case appStates.orderOpened: {
+            (data && 'field' in data)?
+                renderOrder({field: data.field}):
+                renderOrder();
+            break;
+        } 
+        case appStates.successOpened: {
+            renderBasket();
+            break;
+        } 
+        default: main.counter = app.getBasketCardId().length;
+    }
+}
+
+/**
+ * Функция, выполняющая изменение модального окна с предпросмотром карточки товара
+ * 
+ * @param {Object} data - Объект с информацией о карточке товара
+ * @param {string} data.id - Идентификатор карточки товара для получения ее данных
+ * 
+ * При вызове создает новый экземпляр карточки для предпросмотра в модальном
+ * окне в соответствии с действиями пользователя (товар добавлен в корзину или
+ * убран из нее)
+ */
+function renderCardPreview(data: {id: string}) {
+    const cardData = app.getCard(data.id);
+    
+    modal.content = new Card(cloneTemplate(cardPreviewTemplate), events, {
+        onClick: () => events.emit(appStateEvents.BasketChanged, {id: data.id})
+    }).render({
+        ...cardData,
+        buttonLabel: app.getBasketCardId().includes(data.id)?
+            ButtonLabels.inBasket:
+            ButtonLabels.isAvailable,
+        price: app.formatCurrency(cardData.price),
+    });
+}
+
+/**
+ * Функция, выполняющая изменение отображение корзины
+ * 
+ * При вызове выполняет ререндер компонента "Basket" 
+ * в соответствии с внесенными изменениям 
+ */
+function renderBasket() {
+    basket.render({
+        total: app.formatCurrency(app.getTotal()),
+        disabled: app.getBasketCardId().length === 0 ? 
+            true: 
+            false,
+        items: app.getBasketCardId().map((cardId, index) => {
+            const cardData = app.getCard(cardId);
+            return new Card(cloneTemplate(cardBasketTemplate), events, {
+                onClick: () => events.emit(appStateEvents.BasketChanged, {id: cardData.id})
+            }).render({
+                title: cardData.title,
+                price: app.formatCurrency(cardData.price),
+                indexLabel: (index + 1).toString(),
+            });
+        })
+    });
+}
+
+/**
+ * Функция, выполняющая изменение отображения форм заполнения информации о заказе и заполнения контактов
+ * 
  * @param {Object} data - Объект с информацией о input
  * @param {keyof IOrderInfo | keyof IContacts} data.field - Имя поля ввода
  * 
  * Выполняет ререндер форм в соответствии с внесенными данными
  */
-events.on(AppStateEvents.OrderUpdate, (data: {field: keyof IOrderInfo | keyof IContacts}) => {
+function renderOrder(data?: {field: keyof IOrderInfo | keyof IContacts}) {
     order.render({
         payment: app.getOrder().payment,
         address: app.getOrder().address,
@@ -325,155 +423,7 @@ events.on(AppStateEvents.OrderUpdate, (data: {field: keyof IOrderInfo | keyof IC
             contacts.focus = data.field as keyof IContacts;
         }
     }
-})
-
-/**
- * Отвечает за изменения способа выбора оплаты в Model
- * 
- * @event AppStateEvents.PaymentSelected
- * @param {Object} data - Объект с информацией о способе оплаты
- * @param {keyof IOrderInfo} data.payment - Название способа оплаты
- */
-events.on(AppStateEvents.PaymentSelected, (data: {payment: keyof IOrderInfo}) => {
-    app.setOrderFiedls('payment', data.payment);
-    events.emit(AppStateEvents.StateUpdate);
-})
-
-/**
- * Отвечает за отображение формы заполнения контактов пользователя
- * 
- * @event AppStateEvents.OrderSubmit
- * При вызове выполняет рендер компонента "Contacts" и отображает
- * его содержимое в модальном окне
- */
-events.on(AppStateEvents.OrderSubmit, () => {
-    modal.content = contacts.render({
-        email: app.getOrder().email,
-        phone: app.getOrder().phone,
-        valid: !(app.getOrder().email && app.getOrder().phone),
-        error: (app.getMessages().email !== undefined && app.getMessages().phone !== undefined)?
-                    Message.form:
-                    app.getMessages().email !== undefined?
-                        Message.email:
-                        app.getMessages().phone !== undefined?
-                            Message.phone:
-                            Message.no,     
-    })
-})
-
-/**
- * Отвечает за добавление данных в заказ в Model из формы
- * заполнения контактов пользователя
- * 
- * @event AppStateEventPatterns.OrderInputChange
- * @param {Object} data - Объект с информацией о input
- * @param {keyof IContacts} data.field - Имя поля ввода
- * @param {string} data.value - Внесенные данные в поле ввода
- * 
- * При вызове выполняет заполнение данных об заказе в Model в соответствии с именем поля ввода
- * и внесенным значением
- */
-events.on(AppStateEventPatterns.ContactsInputChange, (data: { field: keyof IContacts, value: string }) => {
-    app.setOrderFiedls(data.field, data.value);
-    events.emit(AppStateEvents.StateUpdate, {field: data.field});
-})
-
-/**
- * Отвечает за отправку данных на сервер после нажатия пользователя
- * на кнопку оформления заказа
- * 
- * @event AppStateEvents.ContactsSubmit
- * При вызове выполняется отправка заказа на сервер
- */
-events.on(AppStateEvents.ContactsSubmit, () => {
-    api.orderCards(app.getOrder())
-        .then(data => {
-            app.clearBasket();
-            app.clearOrder();
-            events.emit(AppStateEvents.SuccessOpen, {total: data.total})
-        })
-        .catch(err => console.log(err))
-})
-
-/**
- * Отвечает за отображение статуса об успешном оформлении заказа
- * 
- * @event AppStateEventPatterns.SuccessOpen
- * @param {Object} data - Объект с информацией о заказе
- * @param {number} data.total - Сумма заказа
- * 
- * При вызове выполняет рендер компонента "Success" и отображает
- * его содержимое в модальном окне
- */
-events.on(AppStateEvents.SuccessOpen, (data: {total: number}) => {
-    modal.content = success.render({
-        total: app.formatCurrency(data.total),
-    })
-})
-
-/**
- * Отвечает за закрытие окна с информацией об успешном оформлении заказа
- * 
- * @event AppStateEvents.SuccessSubmit
- */
-events.on(AppStateEvents.SuccessSubmit, () => {
-    modal.close();
-})
-
-/**
- * Отвечает за отображение модального окна на странице
- * 
- * @event AppStateEvents.ModalOpen
- */
-events.on(AppStateEvents.ModalOpen, () => {
-    main.isLocked = true;
-});
-
-/**
- * Отвечает за скрытие модального окна со страницы
- * 
- * @event AppStateEvents.ModalClose
- */
-events.on(AppStateEvents.ModalClose, () => {
-    app.setState(AppStates.noOpened);
-    main.isLocked = false;
-    events.emit(AppStateEvents.StateUpdate);
-});
-
-/**
- * Отвечает за изменение состояния приложения 
- * 
- * @event AppStateEvents.StateUpdate
- * @param {Object} data - Объект с данными для изменения состояния
- * @param {string} data.id - id карточки
- * @param {keyof IOrderInfo | keyof IContacts} data.total - Имя поля ввода
- * @param {number} data.total - Сумма заказа
- */
-events.on(AppStateEvents.StateUpdate, (data?: {
-    id: string, 
-    field: keyof IOrderInfo | keyof IContacts,
-    total: number 
-}) => {
-    switch(app.getState()) {
-        case AppStates.cardPreviewOpened: {
-            events.emit(AppStateEvents.CardPreviewUpdate, {id: data.id});
-            main.counter = app.getBasketCardId().length;
-            break;
-        }
-        case AppStates.basketOpened: {
-            events.emit(AppStateEvents.BasketUpdate);
-            main.counter = app.getBasketCardId().length;
-            break;
-        }
-        case AppStates.orderOpened: {
-            (data && 'field' in data)?
-                events.emit(AppStateEvents.OrderUpdate, {field: data.field}):
-                events.emit(AppStateEvents.OrderUpdate);
-            break;
-        } 
-        default: main.counter = app.getBasketCardId().length;
-    }
-})
+}
 
 /**
  * Загрузка всех карточек товаров с сервера
@@ -481,4 +431,3 @@ events.on(AppStateEvents.StateUpdate, (data?: {
 api.getCards()
     .then(data => app.loadCards(data))
     .catch(err => console.log(err));
-

@@ -17,10 +17,7 @@ export interface IContacts {
     phone: string;
 }
 
-export interface IOrder extends IOrderInfo, IContacts {
-    items: string[];
-    total: number;
-}
+export interface IOrder extends IOrderInfo, IContacts {}
 
 export interface OrderResult {
     id: string;

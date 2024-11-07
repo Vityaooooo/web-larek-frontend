@@ -1,7 +1,37 @@
 import { Settings } from "../types/settings";
 
-export const API_URL = `${process.env.API_ORIGIN}/api/weblarek`;
-export const CDN_URL = `${process.env.API_ORIGIN}/content/weblarek`;
+export const API_URL = `/api/weblarek`;
+export const CDN_URL = `/content/weblarek`;
+
+// Список событий
+export enum appStateEvents {
+	// state events
+	StateUpdate = 'state:update', 
+    // cards events
+    CardsChanged = 'cards:changed',
+    // cardPreview events
+    CardPreviewOpen= 'cardPreview:open', 
+    // basket events
+    BasketOpen = 'basket:open',
+    BasketChanged = 'basket:changed',
+    BasketSubmit = 'basket:submit',
+    // order events
+    OrderSubmit = 'order:submit',
+    PaymentSelected = 'payment:select',
+    // contacts events
+    ContactsSubmit = 'contacts:submit',
+    // success events 
+    SuccessSubmit = 'success:submit',
+    // modal events
+    ModalOpen = 'modal:open',
+    ModalClose = 'modal:close',
+}
+
+export const appStateEventPatterns = {
+    OrderInputChange: /^order\..*:change/,
+    ContactsInputChange: /^contacts\..*:change/,
+}
+
 
 export const settings: Settings = {
     gallerySelector: '.gallery',

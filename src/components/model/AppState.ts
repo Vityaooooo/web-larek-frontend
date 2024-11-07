@@ -2,15 +2,13 @@ import { IEvents } from '../../types/base/events';
 import { ICard, IOrder, Message, IOrderInfo, IContacts, FormErrors } from '../../types/index';
 import { IAppState } from '../../types/model/AppState';
 import { Model } from '../base/Model';
-import { AppStates } from '../../index';
-import { AppStateEvents } from '../../index';
+import { appStates } from '../../index';
+import { appStateEvents } from '../../utils/constants';
 
 export class AppState extends Model<{}> implements IAppState {
     protected cards: Map<string, ICard> = new Map();
     protected basket: Map<string, ICard> = new Map();
     protected order: IOrder = {
-        total: 0,
-        items: [],
         address: '',
         email: '',
         phone: '',
@@ -25,8 +23,8 @@ export class AppState extends Model<{}> implements IAppState {
     }
 
     loadCards(cards: ICard[]) {
-        cards.map(card => this.cards.set(card.id, card));
-        this.emitChanges(AppStateEvents.CardsChanged, this.cards.values());
+        cards.forEach(card => this.cards.set(card.id, card));
+        this.emitChanges(appStateEvents.CardsChanged, this.cards.values());
     }
 
     getCard(id: string) {
@@ -35,21 +33,18 @@ export class AppState extends Model<{}> implements IAppState {
 
     addCard(id: string) {
         this.basket.set(id, this.getCard(id))
-        this.emitChanges(AppStateEvents.StateUpdate, {id});
+        this.emitChanges(appStateEvents.StateUpdate, {id});
     }
 
     removeCard(id: string) {
         this.basket.delete(id);
-        this.emitChanges(AppStateEvents.StateUpdate, {id});
+        this.emitChanges(appStateEvents.StateUpdate, {id});
     }
 
     setOrderFiedls(field: keyof IOrderInfo | keyof IContacts, value: string) {
         this.order[field] = value;
-
-        if (this.validateOrder()) {
-            this.order.items = this.getBasketCardId();
-            this.order.total = this.getTotal();
-        }
+        this.validateOrder();
+        this.emitChanges(appStateEvents.StateUpdate, {field});
     }
 
     validateOrder() {
@@ -61,8 +56,6 @@ export class AppState extends Model<{}> implements IAppState {
         if (!this.order.phone) error.phone = Message.phone;
         
         this._messages = error;
-
-        return Object.keys(this._messages).length === 0;
     }
 
     getBasketCardId() {
@@ -70,17 +63,20 @@ export class AppState extends Model<{}> implements IAppState {
     }
 
     getOrder() {
-        return this.order;
+        return {
+            ...this.order,
+            total: this.getTotal(),
+            items: this.getBasketCardId(),
+        };
     }
 
     clearBasket() {
         this.basket.clear();
+        this.emitChanges(appStateEvents.StateUpdate);
     }
 
     clearOrder() {
         this.order = {
-            total: 0,
-            items: [],
             address: '',
             email: '',
             phone: '',
@@ -90,7 +86,6 @@ export class AppState extends Model<{}> implements IAppState {
 
     getTotal() {
         let total: number = 0;
-        this.basket.values();
         for (let cardBasket of this.basket.values()) {
             total += cardBasket.price;
         }
@@ -99,7 +94,7 @@ export class AppState extends Model<{}> implements IAppState {
 
     setPreview(card: ICard) {
         this.preview = card.id;
-        this.emitChanges(AppStateEvents.CardPreviewOpen, card);
+        this.emitChanges(appStateEvents.CardPreviewOpen, card);
     }
 
     formatCurrency(value: number) {
@@ -115,7 +110,7 @@ export class AppState extends Model<{}> implements IAppState {
         return this._messages;
     }
 
-    setState(value: AppStates) {
+    setState(value: appStates) {
         this._state = value;
     }
 

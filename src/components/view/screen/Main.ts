@@ -1,8 +1,7 @@
 import { IMain } from '../../../types/view/screen/Main';
 import { Component } from '../../base/Component';
 import { IEvents } from '../../../types/base/events';
-import { settings } from '../../../utils/constants';
-import { AppStateEvents } from '../../..';
+import { settings, appStateEvents } from '../../../utils/constants';
 
 export class Main extends Component<IMain> {
     protected _catalog: HTMLElement;
@@ -20,7 +19,7 @@ export class Main extends Component<IMain> {
         this.wrapper = document.querySelector(settings.mainSettings.wrapper);
 
         this._basket.addEventListener('click', () => {
-            this.events.emit(AppStateEvents.BasketOpen);
+            this.events.emit(appStateEvents.BasketOpen);
         });
     }
 

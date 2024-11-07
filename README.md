@@ -159,16 +159,16 @@ interface IEvents {
 * ```removeCard(id: string): void``` - для удаления товара из козины
 * ```setOrderFiedls(field: keyof IOrderInfo | IContacts, value: string)``` - для заполнения данных для осуществления заказа
 * ```getBasketCardId(): MapIterator<string>``` - для получения id карточек из корзины для дальнейшего формирования заказа или проверки доступности кнопки добавления в корзину
-* ```formatCurrency((value: number): string``` - для форматирования цены товара под нужную валюту
+* ```formatCurrency(value: number): string``` - для форматирования цены товара под нужную валюту
 * ```clearBasket(): void``` - для очистки всей корзины
 * ```getTotal(): number``` - получения всей суммы заказа
 * ```setPreview(card: ICard): void  ``` - для изменения данных об открытой карточке
 * ```getOrder(): IOrder``` - для получения всей информации о заказе
 * ```clearOrder(): void``` - для очистки заказа
 * ```getState(): string``` - для получения состояния приложения
-* ```setState(value: AppStates): void``` - для передачи состояния приложения
+* ```setState(value: appStates): void``` - для передачи состояния приложения
 * ```getMessages(): FormErrors``` - для получения сообщений, указывающих на отсутсвие данных в атрибуте Order
-* ```validateOrder(): boolean``` - для проверки данных заказа на валидность
+* ```validateOrder(): void``` - для проверки данных заказа на валидность
 
 Является наследником *Класса Model*
 
@@ -428,10 +428,7 @@ interface IContacts {
 
 Интерфейс данных о заказе в Model
 ```
-interface IOrder extends IOrderInfo, IContacts {
-    items: ICard[];
-    total: number;
-}
+interface IOrder extends IOrderInfo, IContacts {}
 ```
 
 Интерфейс данных о результате обработки заказа в Model
@@ -473,37 +470,34 @@ enum ButtonLabels {
 
 Список состояний 
 ```
-const enum AppStates {
+const enum appStates {
     basketOpened = 'basket',
     cardPreviewOpened = 'cardPreview',
     orderOpened = 'orderForm',
+    successOpened = 'success',
     noOpened = '',
 }
 ```
 
 Список событий
 ```
-const enum AppStateEvents {
+const enum appStateEvents {
     // state events
     StateUpdate = 'state:update',
     // cards events
     CardsChanged = 'cards:changed',
     // cardPreview events
     CardPreviewOpen= 'cardPreview:open',
-    CardPreviewUpdate = 'cardPreview:update',
     // basket events
     BasketOpen = 'basket:open',
     BasketChanged = 'basket:changed',
-    BasketUpdate = 'basket:update',
     BasketSubmit = 'basket:submit',
     // order events
-    OrderUpdate = 'order:update',
     OrderSubmit = 'order:submit',
     PaymentSelected = 'payment:select',
     // contacts events
     ContactsSubmit = 'contacts:submit',
     // success events 
-    SuccessOpen = 'success:open',
     SuccessSubmit = 'success:submit',
     // modal events
     ModalOpen = 'modal:open',
@@ -512,7 +506,7 @@ const enum AppStateEvents {
 ```
 Список событий на изменение полей в формах
 ```
-const AppStateEventPatterns = {
+const appStateEventPatterns = {
     OrderInputChange: /^order\..*:change/,
     ContactsInputChange: /^contacts\..*:change/,
 }
@@ -529,16 +523,12 @@ type FormErrors = Partial<Record<keyof IOrderInfo | keyof IContacts, string>>;
 * ```state:update``` - изменение состояния приложения
 * ```cards:changed``` - изменение элементов каталога
 * ```cardPreview:open``` - открытие предпросмотра товара в модальном окне
-* ```cardPreview:update``` - изменение отображения предпросмотра товара в модальном окне (пользователь добавил/удалил товар в/из корзины)
 * ```basket:open``` - открытие корзины
 * ```basket:changed``` - изменение состояния корзины (при удалении или добавлении товара в корзину)
-* ```basket:update``` - изменение отображения корзины 
 * ```basket:submit``` - потверждение товаров в корзине и открытие формы для внесения данных о заказе
-* ```order:update``` - изменение отображения формы заказа
 * ```payment:select``` - изменение выбора способа оплаты
 * ```order:submit``` - подтверждение внесенных данных и открытие формы заполнения контактов
-* ```contacts:submit``` - потверждение введенных данных в полях формы контактов и отправка заказа на сервер
-* ```success:open``` - открытие окна со статусом об успешной отправке заказа на сервер
+* ```contacts:submit``` - потверждение введенных данных в полях формы контактов, отправка заказа на сервер (в случае успешного заказа - открытие окна со статусом об успешной отправке заказа на сервер)
 * ```success:submit``` - закрытие окна со статусом об успешной отправке заказа на сервер
 * ```/^order\..*:change/``` - изменение полей ввода в форме с информацией о заказе
 * ```/^contacts\..*:change/``` - изменение полей ввода в форме с информацией о контактах пользователя

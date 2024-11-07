@@ -1,8 +1,7 @@
 import { IOrderInfo, Payment, Message } from '../../../types';
 import { Form } from '../common/Form';
 import { IEvents } from '../../../types/base/events';
-import { settings } from '../../../utils/constants';
-import { AppStateEvents } from '../../..';
+import { settings, appStateEvents } from '../../../utils/constants';
 
 export class Order extends Form<IOrderInfo> {
     protected _cash: HTMLButtonElement;
@@ -17,11 +16,11 @@ export class Order extends Form<IOrderInfo> {
         this._address = container.querySelector(settings.orderInfoSettings.address)!;
     
         this._card.addEventListener('click', () => {
-            this.events.emit(AppStateEvents.PaymentSelected, {payment: this._card.name})
+            this.events.emit(appStateEvents.PaymentSelected, {payment: this._card.name})
         });
 
         this._cash.addEventListener('click', () => {
-            this.events.emit(AppStateEvents.PaymentSelected, {payment: this._cash.name})
+            this.events.emit(appStateEvents.PaymentSelected, {payment: this._cash.name})
         });
     }
 
@@ -30,15 +29,7 @@ export class Order extends Form<IOrderInfo> {
     }
     
     set payment(value: string) {
-        this.toggleClass(this._card, settings.orderInfoSettings.button_active, false);
-        this.toggleClass(this._cash, settings.orderInfoSettings.button_active, false);
-        
-        if (value === Payment.card) {
-            this.toggleClass(this._card, settings.orderInfoSettings.button_active, true);
-            }
-
-        if (value === Payment.cash) {
-            this.toggleClass(this._cash, settings.orderInfoSettings.button_active, true);
-        }
+        this.toggleClass(this._card, settings.orderInfoSettings.button_active, value === Payment.card); 
+        this.toggleClass(this._cash, settings.orderInfoSettings.button_active, value === Payment.cash);
     }
 }

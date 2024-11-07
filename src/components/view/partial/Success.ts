@@ -1,8 +1,7 @@
 import { Component } from '../../base/Component';
 import { ISuccess } from '../../../types/view/partial/Success';
 import { IEvents } from '../../../types/base/events';
-import { settings } from '../../../utils/constants';
-import { AppStateEvents } from '../../..';
+import { settings, appStateEvents } from '../../../utils/constants';
 
 export class Success extends Component<ISuccess> {
     protected _close: HTMLButtonElement;
@@ -15,7 +14,7 @@ export class Success extends Component<ISuccess> {
         this._close = container.querySelector(settings.successModal.button);
     
         this._close.addEventListener('click', () => {
-            this.events.emit(AppStateEvents.SuccessSubmit);
+            this.events.emit(appStateEvents.SuccessSubmit);
         })
     }
 
