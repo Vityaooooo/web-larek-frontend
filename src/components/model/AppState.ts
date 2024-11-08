@@ -56,6 +56,8 @@ export class AppState extends Model<{}> implements IAppState {
         if (!this.order.phone) error.phone = Message.phone;
         
         this._messages = error;
+
+        return this._messages;
     }
 
     getBasketCardId() {
@@ -104,10 +106,6 @@ export class AppState extends Model<{}> implements IAppState {
         if (value % 10 <= 4 && value % 10 >= 2)
             return value.toString() + ' синапса';
         return value.toString() + ' синапсов';
-    }
-
-    getMessages() {
-        return this._messages;
     }
 
     setState(value: appStates) {

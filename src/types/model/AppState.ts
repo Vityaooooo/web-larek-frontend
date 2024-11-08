@@ -14,8 +14,7 @@ export interface IAppState {
     clearBasket(): void;
     getTotal(): number;
     setPreview(card: ICard): void;
-    validateOrder(): void;
+    validateOrder(): FormErrors;
     setState(value: appStates): void;
     getState(): string;
-    getMessages(): FormErrors;
 }

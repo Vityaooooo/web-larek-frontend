@@ -145,16 +145,17 @@ events.on(appStateEvents.basketOpen, () => {
  */
 events.on(appStateEvents.basketSubmit, () => {
     app.setState(appStates.orderOpened);
+    console.log(app.validateOrder().payment, app.validateOrder().address)
 
     modal.content = order.render({
         payment: app.getOrder().payment,
         address: app.getOrder().address,
         valid: !(app.getOrder().payment && app.getOrder().address),
-        error: (app.getMessages().payment === undefined && app.getMessages().address === undefined)?
+        error: (app.validateOrder().payment !== undefined && app.validateOrder().address !== undefined)?
                     Message.form:
-                    app.getMessages().payment !== undefined?
+                    app.validateOrder().payment !== undefined?
                         Message.payment:
-                        app.getMessages().address !== undefined?
+                        app.validateOrder().address !== undefined?
                             Message.address:
                             Message.no,        
     })
@@ -199,11 +200,11 @@ events.on(appStateEvents.orderSubmit, () => {
         email: app.getOrder().email,
         phone: app.getOrder().phone,
         valid: !(app.getOrder().email && app.getOrder().phone),
-        error: (app.getMessages().email !== undefined && app.getMessages().phone !== undefined)?
+        error: (app.validateOrder().email !== undefined && app.validateOrder().phone !== undefined)?
                     Message.form:
-                    app.getMessages().email !== undefined?
+                    app.validateOrder().email !== undefined?
                         Message.email:
-                        app.getMessages().phone !== undefined?
+                        app.validateOrder().phone !== undefined?
                             Message.phone:
                             Message.no,     
     })
@@ -394,11 +395,11 @@ function renderOrder(data?: {field: keyof IOrderInfo | keyof IContacts}) {
         payment: app.getOrder().payment,
         address: app.getOrder().address,
         valid: !(app.getOrder().payment && app.getOrder().address),
-        error: (app.getMessages().payment !== undefined && app.getMessages().address !== undefined)?
+        error: (app.validateOrder().payment !== undefined && app.validateOrder().address !== undefined)?
                     Message.form:
-                    app.getMessages().payment !== undefined?
+                    app.validateOrder().payment !== undefined?
                         Message.payment:
-                        app.getMessages().address !== undefined?
+                        app.validateOrder().address !== undefined?
                             Message.address:
                             Message.no,        
     })
@@ -407,11 +408,11 @@ function renderOrder(data?: {field: keyof IOrderInfo | keyof IContacts}) {
         email: app.getOrder().email,
         phone: app.getOrder().phone,
         valid: !(app.getOrder().email && app.getOrder().phone),
-        error: (app.getMessages().email !== undefined && app.getMessages().phone !== undefined)?
+        error: (app.validateOrder().email !== undefined && app.validateOrder().phone !== undefined)?
                     Message.form:
-                    app.getMessages().email !== undefined?
+                    app.validateOrder().email !== undefined?
                         Message.email:
-                        app.getMessages().phone !== undefined?
+                        app.validateOrder().phone !== undefined?
                             Message.phone:
                             Message.no,     
     })
